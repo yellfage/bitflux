@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "commit": "commit"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/prompt-cli": "^12.1.1",
+    "commitlint": "^12.1.1",
+    "husky": "^6.0.0"
+  }
+}

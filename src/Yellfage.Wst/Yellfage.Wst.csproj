@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <PackageId>Yellfage.Wst</PackageId>
+    <Company>Yellfage</Company>
+    <Authors>iRandell</Authors>
+    <Version>1.0.0</Version>
+    <PackageDescription>Web Socket Transport</PackageDescription>
+    <RepositoryUrl>https://github.com/yellfage/wst</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
