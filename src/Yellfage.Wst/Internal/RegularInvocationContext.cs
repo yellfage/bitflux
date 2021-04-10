@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,12 +14,13 @@ namespace Yellfage.Wst.Internal
 
         public RegularInvocationContext(
             IHub<T> hub,
+            IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
             object?[] args,
             string invocationId,
             bool completed,
-            IMessageTransmitter messageTransmitter) : base(hub, caller, handlerName, args)
+            IMessageTransmitter messageTransmitter) : base(hub, serviceProvider, caller, handlerName, args)
         {
             InvocationId = invocationId;
             Completed = completed;

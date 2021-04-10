@@ -11,16 +11,19 @@ namespace Yellfage.Wst.Internal
         private IHub<T> Hub { get; }
         private IMessageReceiver MessageReceiver { get; }
         private IInvocationProcessor InvocationProcessor { get; }
+        private IServiceProvider ServiceProvider { get; }
         private IMessageTransmitter? MessageTransmitter { get; set; }
 
         public MessageDispatcher(
             IHub<T> hub,
             IMessageReceiver messageReceiver,
-            IInvocationProcessor invocationProcessor)
+            IInvocationProcessor invocationProcessor,
+            IServiceProvider serviceProvider)
         {
             Hub = hub;
             MessageReceiver = messageReceiver;
             InvocationProcessor = invocationProcessor;
+            ServiceProvider = serviceProvider;
         }
 
         public async Task StartAcceptingAsync(
@@ -80,6 +83,7 @@ namespace Yellfage.Wst.Internal
         {
             var context = new RegularInvocationContext<T>(
                     Hub,
+                    ServiceProvider,
                     client,
                     message.HandlerName,
                     message.Args,
@@ -97,6 +101,7 @@ namespace Yellfage.Wst.Internal
         {
             var context = new NotifiableInvocationContext<T>(
                     Hub,
+                    ServiceProvider,
                     client,
                     message.HandlerName,
                     message.Args);

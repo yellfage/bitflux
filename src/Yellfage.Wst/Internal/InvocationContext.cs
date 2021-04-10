@@ -16,11 +16,13 @@ namespace Yellfage.Wst.Internal
 
         public InvocationContext(
             IHub<T> hub,
+            IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
             object?[] args)
         {
             Hub = hub;
+            ServiceProvider = serviceProvider;
             Caller = caller;
             HandlerName = handlerName;
             Args = args;

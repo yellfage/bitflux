@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,9 +8,10 @@ namespace Yellfage.Wst.Internal
     {
         public NotifiableInvocationContext(
             IHub<T> hub,
+            IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
-            object?[] args) : base(hub, caller, handlerName, args)
+            object?[] args) : base(hub, serviceProvider, caller, handlerName, args)
         {
         }
 

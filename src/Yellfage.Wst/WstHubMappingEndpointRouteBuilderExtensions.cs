@@ -121,7 +121,7 @@ namespace Yellfage.Wst
                 handlerDescriptorProvider, filterExecutor, handlerExecutor);
 
             var messageDispatcher = new MessageDispatcher<T>(
-                hubDescriptor.Instance, messageReceiver, invocationProcessor);
+                hubDescriptor.Instance, messageReceiver, invocationProcessor, hubDescriptor.ServiceProvider);
 
             var connectionDispatcher = new ConnectionDispatcher<T>(
                 hubDescriptor.Instance, filterProvider, filterExecutor, messageDispatcher, hubDescriptor.ServiceProvider);
