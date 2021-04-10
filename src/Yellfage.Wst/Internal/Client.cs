@@ -79,10 +79,10 @@ namespace Yellfage.Wst.Internal
 
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
         {
-            await DisconnectAsync(null, cancellationToken);
+            await DisconnectAsync("", cancellationToken);
         }
 
-        public async Task DisconnectAsync(string? reason, CancellationToken cancellationToken = default)
+        public async Task DisconnectAsync(string reason, CancellationToken cancellationToken = default)
         {
             await ClientDisconnector.DisconnectAsync(reason, cancellationToken);
         }

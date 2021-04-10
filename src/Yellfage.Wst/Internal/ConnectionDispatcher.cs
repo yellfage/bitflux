@@ -78,7 +78,7 @@ namespace Yellfage.Wst.Internal
 
         private async Task ApplyDisconnectionFiltersAsync(
             IClient<T> client,
-            string? reason)
+            string reason)
         {
             IList<IDisconnectionFilter> filters = FilterProvider
                 .GetDisconnectionFilters()

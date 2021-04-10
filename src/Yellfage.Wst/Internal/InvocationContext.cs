@@ -28,7 +28,7 @@ namespace Yellfage.Wst.Internal
 
         public abstract Task ReplyAsync(object? payload, CancellationToken cancellationToken = default);
 
-        public abstract Task ReplyErrorAsync(string? error, CancellationToken cancellationToken = default);
+        public abstract Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
 
         public async Task NotifyOthersAsync(string handlerName, CancellationToken cancellationToken = default)
         {

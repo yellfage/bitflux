@@ -5,6 +5,6 @@ namespace Yellfage.Wst.Internal
 {
     internal interface IClientDisconnector
     {
-        Task DisconnectAsync(string? reason, CancellationToken cancellationToken = default);
+        Task DisconnectAsync(string reason, CancellationToken cancellationToken = default);
     }
 }

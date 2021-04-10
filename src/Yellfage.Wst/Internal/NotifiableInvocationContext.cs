@@ -18,7 +18,7 @@ namespace Yellfage.Wst.Internal
             return Task.CompletedTask;
         }
 
-        public override Task ReplyErrorAsync(string? error, CancellationToken cancellationToken = default)
+        public override Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

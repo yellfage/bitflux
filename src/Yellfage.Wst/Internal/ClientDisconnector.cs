@@ -14,7 +14,7 @@ namespace Yellfage.Wst.Internal
         }
 
         public async Task DisconnectAsync(
-            string? reason,
+            string reason,
             CancellationToken cancellationToken = default)
         {
             if (WebSocket.State != WebSocketState.Open)

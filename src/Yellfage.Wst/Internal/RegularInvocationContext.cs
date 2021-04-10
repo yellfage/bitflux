@@ -37,7 +37,7 @@ namespace Yellfage.Wst.Internal
         }
 
         public override async Task ReplyErrorAsync(
-            string? error,
+            string error,
             CancellationToken cancellationToken = default)
         {
             var message = new OutgoingFailedRegularInvocationCompletionMessage(

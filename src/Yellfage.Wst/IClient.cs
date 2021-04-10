@@ -19,6 +19,6 @@ namespace Yellfage.Wst
         Task NotifyAsync(string handlerName, object?[] args, CancellationToken cancellationToken = default);
 
         Task DisconnectAsync(CancellationToken cancellationToken = default);
-        Task DisconnectAsync(string? reason, CancellationToken cancellationToken = default);
+        Task DisconnectAsync(string reason, CancellationToken cancellationToken = default);
     }
 }
