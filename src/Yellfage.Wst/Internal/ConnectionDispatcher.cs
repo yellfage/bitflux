@@ -54,7 +54,7 @@ namespace Yellfage.Wst.Internal
                 await MessageDispatcher.StartAcceptingAsync(webSocket, protocol, client);
             }
 
-            await ApplyDisconnectionFiltersAsync(client, webSocket.CloseStatusDescription);
+            await ApplyDisconnectionFiltersAsync(client, webSocket.CloseStatusDescription ?? "");
 
             Hub.Clients.All.Remove(client);
         }
