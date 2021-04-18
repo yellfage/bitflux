@@ -34,12 +34,10 @@ namespace Yellfage.Wst.Internal
 
         public async Task AcceptAsync(IProtocol protocol, WebSocket webSocket)
         {
-            var clientNotifier = new ClientNotifier(
-                new MessageTransmitter(webSocket, protocol));
-
+            var messageTransmitter = new MessageTransmitter(webSocket, protocol);
             var clientDisconnector = new ClientDisconnector(webSocket);
 
-            var client = new Client<T>(clientNotifier, clientDisconnector);
+            var client = new Client<T>(messageTransmitter, clientDisconnector);
 
             Hub.Clients.All.Add(client);
 

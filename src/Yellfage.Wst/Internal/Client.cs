@@ -2,18 +2,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Yellfage.Wst.Communication;
+
 namespace Yellfage.Wst.Internal
 {
     internal class Client<T> : IClient<T>
     {
-        private IClientNotifier ClientNotifier { get; }
+        private IMessageTransmitter MessageTransmitter { get; }
         private IClientDisconnector ClientDisconnector { get; }
 
         public Client(
-            IClientNotifier clientNotifier,
+            IMessageTransmitter messageTransmitter,
             IClientDisconnector clientDisconnector)
         {
-            ClientNotifier = clientNotifier;
+            MessageTransmitter = messageTransmitter;
             ClientDisconnector = clientDisconnector;
         }
 
@@ -74,7 +76,19 @@ namespace Yellfage.Wst.Internal
 
         public async Task NotifyAsync(string handlerName, object?[] args, CancellationToken cancellationToken = default)
         {
-            await ClientNotifier.NotifyAsync(handlerName, args);
+            if (handlerName is null)
+            {
+                throw new ArgumentNullException(nameof(handlerName));
+            }
+
+            if (args is null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
+            var message = new OutgoingNotifiableInvocationMessage(handlerName, args);
+
+            await MessageTransmitter.TransmitAsync(message, cancellationToken);
         }
 
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)
