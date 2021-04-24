@@ -8,13 +8,17 @@ namespace Yellfage.Wst.Internal
 {
     internal class Client<T> : IClient<T>
     {
+        public string Id { get; }
+
         private IMessageTransmitter MessageTransmitter { get; }
         private IClientDisconnector ClientDisconnector { get; }
 
         public Client(
+            string id,
             IMessageTransmitter messageTransmitter,
             IClientDisconnector clientDisconnector)
         {
+            Id = id;
             MessageTransmitter = messageTransmitter;
             ClientDisconnector = clientDisconnector;
         }

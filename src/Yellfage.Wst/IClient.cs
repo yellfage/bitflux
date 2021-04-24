@@ -5,6 +5,8 @@ namespace Yellfage.Wst
 {
     public interface IClient<T>
     {
+        public string Id { get; }
+
         Task NotifyAsync(string handlerName, CancellationToken cancellationToken = default);
         Task NotifyAsync<TArg1>(string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
         Task NotifyAsync<TArg1, TArg2>(string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
