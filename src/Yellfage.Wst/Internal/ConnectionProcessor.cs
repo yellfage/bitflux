@@ -72,8 +72,7 @@ namespace Yellfage.Wst.Internal
             var context = new DisconnectionContext<T>(
                 Hub,
                 ServiceProvider,
-                Client,
-                "");
+                Client);
 
             await FilterExecutor.ExecuteDisconnectionFiltersAsync(
                 filters,
