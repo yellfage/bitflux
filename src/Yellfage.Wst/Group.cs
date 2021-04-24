@@ -14,7 +14,7 @@ namespace Yellfage.Wst
 
         public Group()
         {
-            Clients = new GroupClientManager<T>(new List<IClient<T>>());
+            Clients = new GroupClientManager<T>(new Dictionary<string, IClient<T>>());
             Metadata = new GroupMetadataManager<T>(new Dictionary<string, object>());
         }
 

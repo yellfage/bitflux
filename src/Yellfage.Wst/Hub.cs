@@ -12,7 +12,7 @@ namespace Yellfage.Wst
 
         public Hub()
         {
-            Clients = new HubClientManager<T>(new List<IClient<T>>());
+            Clients = new HubClientManager<T>(new Dictionary<string, IClient<T>>());
             Groups = new HubGroupManager<T>(new Dictionary<string, IGroup<T>>());
             Metadata = new HubMetadataManager<T>(new Dictionary<string, object>());
         }

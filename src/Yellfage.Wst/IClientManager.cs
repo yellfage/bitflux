@@ -6,7 +6,7 @@ namespace Yellfage.Wst
 {
     public interface IClientManager<T>
     {
-        IList<IClient<T>> All { get; }
+        IDictionary<string, IClient<T>> All { get; }
 
         Task NotifyManyAsync(IEnumerable<IClient<T>> clients, string handlerName, CancellationToken cancellationToken = default);
         Task NotifyManyAsync<TArg1>(IEnumerable<IClient<T>> clients, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);

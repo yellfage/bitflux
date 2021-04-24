@@ -8,9 +8,9 @@ namespace Yellfage.Wst.Internal
 {
     internal abstract class ClientManager<T> : IClientManager<T>
     {
-        public IList<IClient<T>> All { get; }
+        public IDictionary<string, IClient<T>> All { get; }
 
-        public ClientManager(IList<IClient<T>> clients)
+        public ClientManager(IDictionary<string, IClient<T>> clients)
         {
             All = clients;
         }
@@ -224,7 +224,7 @@ namespace Yellfage.Wst.Internal
             }
 
             await NotifyManyAsync(
-                All.Except(excluded),
+                All.Values.Except(excluded),
                 handlerName,
                 args,
                 cancellationToken);
@@ -287,7 +287,7 @@ namespace Yellfage.Wst.Internal
 
         public async Task NotifyAllAsync(string handlerName, object?[] args, CancellationToken cancellationToken = default)
         {
-            await NotifyManyAsync(All, handlerName, args, cancellationToken);
+            await NotifyManyAsync(All.Values, handlerName, args, cancellationToken);
         }
 
         public async Task NotifyAllExceptAsync(IClient<T> excluded, string handlerName, CancellationToken cancellationToken = default)
@@ -348,7 +348,7 @@ namespace Yellfage.Wst.Internal
         public async Task NotifyAllExceptAsync(IClient<T> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default)
         {
             await NotifyManyExceptAsync(
-                All,
+                All.Values,
                 excluded,
                 handlerName,
                 args,
@@ -413,7 +413,7 @@ namespace Yellfage.Wst.Internal
         public async Task NotifyAllExceptAsync(IEnumerable<IClient<T>> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default)
         {
             await NotifyManyExceptAsync(
-                All,
+                All.Values,
                 excluded,
                 handlerName,
                 args,
