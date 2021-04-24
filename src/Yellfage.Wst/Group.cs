@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using Yellfage.Wst.Internal;
 
@@ -14,8 +15,8 @@ namespace Yellfage.Wst
 
         public Group()
         {
-            Clients = new GroupClientManager<T>(new Dictionary<string, IClient<T>>());
-            Metadata = new GroupMetadataManager<T>(new Dictionary<string, object>());
+            Clients = new GroupClientManager<T>(new ConcurrentDictionary<string, IClient<T>>());
+            Metadata = new GroupMetadataManager<T>(new ConcurrentDictionary<string, object>());
         }
 
         public async Task NotifyAsync(string handlerName, CancellationToken cancellationToken = default)
