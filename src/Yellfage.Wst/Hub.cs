@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using Yellfage.Wst.Internal;
 
@@ -12,9 +12,9 @@ namespace Yellfage.Wst
 
         public Hub()
         {
-            Clients = new HubClientManager<T>(new Dictionary<string, IClient<T>>());
-            Groups = new HubGroupManager<T>(new Dictionary<string, IGroup<T>>());
-            Metadata = new HubMetadataManager<T>(new Dictionary<string, object>());
+            Clients = new HubClientManager<T>(new ConcurrentDictionary<string, IClient<T>>());
+            Groups = new HubGroupManager<T>(new ConcurrentDictionary<string, IGroup<T>>());
+            Metadata = new HubMetadataManager<T>(new ConcurrentDictionary<string, object>());
         }
     }
 }
