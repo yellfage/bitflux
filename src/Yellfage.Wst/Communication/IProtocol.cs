@@ -10,6 +10,6 @@ namespace Yellfage.Wst.Communication
 
         ArraySegment<byte> Serialize(object value);
         bool TryDeserialize(ArraySegment<byte> bytes, [MaybeNullWhen(false)] out IncomingMessage message);
-        bool TryConvertValue(object? value, Type type, [MaybeNullWhen(false)] out object? convertedValue);
+        object? Convert(object? value, Type type);
     }
 }

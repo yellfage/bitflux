@@ -71,29 +71,15 @@ namespace Yellfage.Wst.Communication
             }
         }
 
-        public bool TryConvertValue(
-            object? value,
-            Type type,
-            [MaybeNullWhen(false)] out object? convertedValue)
+        public object? Convert(object? value, Type type)
         {
-            try
+            JToken jToken = value switch
             {
-                JToken jToken = value switch
-                {
-                    null => JValue.CreateNull(),
-                    _ => JToken.FromObject(value)
-                };
+                null => JValue.CreateNull(),
+                _ => JToken.FromObject(value)
+            };
 
-                convertedValue = jToken.ToObject(type);
-
-                return true;
-            }
-            catch
-            {
-                convertedValue = null;
-
-                return false;
-            }
+            return jToken.ToObject(type);
         }
     }
 }

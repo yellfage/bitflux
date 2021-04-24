@@ -15,7 +15,16 @@ namespace Yellfage.Wst.Internal
 
         public bool TryConvert(object? argument, Type type, out object? convertedArgument)
         {
-            return Protocol.TryConvertValue(argument, type, out convertedArgument);
+            try
+            {
+                convertedArgument = Protocol.Convert(argument, type);
+            }
+            catch
+            {
+                convertedArgument = null;
+            }
+
+            return convertedArgument is not null;
         }
     }
 }
