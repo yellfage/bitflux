@@ -78,7 +78,11 @@ namespace Yellfage.Wst.Communication
         {
             try
             {
-                var jToken = JToken.FromObject(value!);
+                JToken jToken = value switch
+                {
+                    null => JValue.CreateNull(),
+                    _ => JToken.FromObject(value)
+                };
 
                 convertedValue = jToken.ToObject(type);
 
