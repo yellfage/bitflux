@@ -111,22 +111,17 @@ namespace Yellfage.Wst
             var protocolProvider = new ProtocolProvider(hubDescriptor.Options.Protocols);
             var filterProvider = new FilterProvider(hubDescriptor.Filters);
 
-            var messageReceiver = new MessageReceiver(
-                hubDescriptor.Options.MessageSegmentSize,
-                hubDescriptor.Options.MessageSegmentSize * hubDescriptor.Options.MaxMessageSegments);
-
             var handlerDescriptorProvider = new HandlerDescriptorProvider(hubDescriptor.HandlerDescriptors);
 
-            var invocationProcessor = new InvocationProcessor(
-                handlerDescriptorProvider, filterExecutor, handlerExecutor);
-
-            var messageDispatcher = new MessageDispatcher<T>(
-                hubDescriptor.Instance, messageReceiver, invocationProcessor, hubDescriptor.ServiceProvider);
-
-            var connectionDispatcher = new ConnectionDispatcher<T>(
-                hubDescriptor.Instance, filterProvider, filterExecutor, messageDispatcher, hubDescriptor.ServiceProvider);
-
-            return new RequestProcessor(protocolProvider, connectionDispatcher);
+            return new RequestProcessor<T>(
+                hubDescriptor.Instance,
+                protocolProvider,
+                filterProvider,
+                filterExecutor,
+                handlerDescriptorProvider,
+                handlerExecutor,
+                hubDescriptor.ServiceProvider,
+                hubDescriptor.Options);
         }
 
         private static WebSocketOptions SetupWebSocketOptions(HubOptions hubOptions)

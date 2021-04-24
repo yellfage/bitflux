@@ -1,63 +1,52 @@
 using System;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using Yellfage.Wst.Communication;
 using Yellfage.Wst.Filters;
 using Yellfage.Wst.Filters.Internal;
 
 namespace Yellfage.Wst.Internal
 {
-    internal class ConnectionDispatcher<T> : IConnectionDispatcher
+    internal class ConnectionProcessor<T> : IConnectionProcessor
     {
         private IHub<T> Hub { get; }
+        private IClient<T> Client { get; }
         private IFilterProvider FilterProvider { get; }
         private IFilterExecutor FilterExecutor { get; }
-        private IMessageDispatcher<T> MessageDispatcher { get; }
+        private IMessageDispatcher MessageDispatcher { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public ConnectionDispatcher(
+        public ConnectionProcessor(
             IHub<T> hub,
+            IClient<T> client,
             IFilterProvider filterProvider,
             IFilterExecutor filterExecutor,
-            IMessageDispatcher<T> messageDispatcher,
+            IMessageDispatcher messageDispatcher,
             IServiceProvider serviceProvider)
         {
             Hub = hub;
+            Client = client;
             FilterProvider = filterProvider;
             FilterExecutor = filterExecutor;
             MessageDispatcher = messageDispatcher;
             ServiceProvider = serviceProvider;
         }
 
-        public async Task AcceptAsync(IProtocol protocol, WebSocket webSocket)
+        public async Task StartProcessingAsync()
         {
-            var messageTransmitter = new MessageTransmitter(webSocket, protocol);
-            var clientDisconnector = new ClientDisconnector(webSocket);
+            Hub.Clients.All.Add(Client);
 
-            var client = new Client<T>(messageTransmitter, clientDisconnector);
+            await ApplyConnectionFiltersAsync();
 
-            Hub.Clients.All.Add(client);
+            await MessageDispatcher.StartAcceptingAsync();
 
-            await ApplyConnectionFiltersAsync(client);
+            await ApplyDisconnectionFiltersAsync();
 
-            /*
-             * We need to check the connection state because
-             * a connection filter could kick the client out
-             */
-            if (webSocket.State == WebSocketState.Open)
-            {
-                await MessageDispatcher.StartAcceptingAsync(webSocket, protocol, client);
-            }
-
-            await ApplyDisconnectionFiltersAsync(client, webSocket.CloseStatusDescription ?? "");
-
-            Hub.Clients.All.Remove(client);
+            Hub.Clients.All.Remove(Client);
         }
 
-        private async Task ApplyConnectionFiltersAsync(IClient<T> client)
+        private async Task ApplyConnectionFiltersAsync()
         {
             IList<IConnectionFilter> filters = FilterProvider
                 .GetConnectionFilters()
@@ -66,7 +55,7 @@ namespace Yellfage.Wst.Internal
             var context = new ConnectionContext<T>(
                 Hub,
                 ServiceProvider,
-                client);
+                Client);
 
             await FilterExecutor.ExecuteConnectionFiltersAsync(
                 filters,
@@ -74,9 +63,7 @@ namespace Yellfage.Wst.Internal
                 () => Task.CompletedTask);
         }
 
-        private async Task ApplyDisconnectionFiltersAsync(
-            IClient<T> client,
-            string reason)
+        private async Task ApplyDisconnectionFiltersAsync()
         {
             IList<IDisconnectionFilter> filters = FilterProvider
                 .GetDisconnectionFilters()
@@ -85,8 +72,8 @@ namespace Yellfage.Wst.Internal
             var context = new DisconnectionContext<T>(
                 Hub,
                 ServiceProvider,
-                client,
-                reason);
+                Client,
+                "");
 
             await FilterExecutor.ExecuteDisconnectionFiltersAsync(
                 filters,

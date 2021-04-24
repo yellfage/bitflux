@@ -1,53 +1,50 @@
 using System;
-using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Internal
 {
-    internal class MessageDispatcher<T> : IMessageDispatcher<T>
+    internal class MessageDispatcher<T> : IMessageDispatcher
     {
         private IHub<T> Hub { get; }
+        private IClient<T> Client { get; }
         private IMessageReceiver MessageReceiver { get; }
+        private IMessageDeserializer MessageDeserializer { get; }
+        private IMessageTransmitter MessageTransmitter { get; }
         private IInvocationProcessor InvocationProcessor { get; }
         private IServiceProvider ServiceProvider { get; }
-        private IMessageTransmitter? MessageTransmitter { get; set; }
 
         public MessageDispatcher(
             IHub<T> hub,
+            IClient<T> client,
             IMessageReceiver messageReceiver,
+            IMessageDeserializer messageDeserializer,
+            IMessageTransmitter messageTransmitter,
             IInvocationProcessor invocationProcessor,
             IServiceProvider serviceProvider)
         {
             Hub = hub;
+            Client = client;
             MessageReceiver = messageReceiver;
+            MessageDeserializer = messageDeserializer;
+            MessageTransmitter = messageTransmitter;
             InvocationProcessor = invocationProcessor;
             ServiceProvider = serviceProvider;
         }
 
-        public async Task StartAcceptingAsync(
-            WebSocket webSocket,
-            IProtocol protocol,
-            IClient<T> client)
+        public async Task StartAcceptingAsync()
         {
-            MessageTransmitter = new MessageTransmitter(webSocket, protocol);
-
-            await MessageReceiver.StartReceivingAsync(
-                webSocket,
-                bytes => ProcessMessageBytesAsync(bytes, protocol, client));
+            await MessageReceiver.StartReceivingAsync(ProcessMessageBytesAsync);
         }
 
-        private async Task ProcessMessageBytesAsync(
-            ArraySegment<byte> bytes,
-            IProtocol protocol,
-            IClient<T> client)
+        private async Task ProcessMessageBytesAsync(ArraySegment<byte> bytes)
         {
-            if (protocol.TryDeserialize(bytes, out IncomingMessage? incomingMessage))
+            if (MessageDeserializer.TryDeserialize(bytes, out IncomingMessage? incomingMessage))
             {
                 if (!incomingMessage.IsValid())
                 {
-                    await client.DisconnectAsync("Incoming message is invalid");
+                    await Client.DisconnectAsync("Incoming message is invalid");
 
                     return;
                 }
@@ -55,58 +52,52 @@ namespace Yellfage.Wst.Internal
                 switch (incomingMessage)
                 {
                     case IncomingRegularInvocationMessage message:
-                        await ProcessRegularInvocationMessageAsync(client, message, protocol);
+                        await ProcessRegularInvocationMessageAsync(message);
 
                         break;
 
                     case IncomingNotifiableInvocationMessage message:
-                        await ProcessNotifiableInvocationMessageAsync(client, message, protocol);
+                        await ProcessNotifiableInvocationMessageAsync(message);
 
                         break;
 
                     default:
-                        await client.DisconnectAsync("Unknown message type");
+                        await Client.DisconnectAsync("Unknown message type");
 
                         break;
                 }
             }
             else
             {
-                await client.DisconnectAsync("Unable to deserialize received data");
+                await Client.DisconnectAsync("Unable to deserialize received data");
             }
         }
 
-        private async Task ProcessRegularInvocationMessageAsync(
-            IClient<T> client,
-            IncomingRegularInvocationMessage message,
-            IProtocol protocol)
+        private async Task ProcessRegularInvocationMessageAsync(IncomingRegularInvocationMessage message)
         {
             var context = new RegularInvocationContext<T>(
                     Hub,
                     ServiceProvider,
-                    client,
+                    Client,
                     message.HandlerName,
                     message.Args,
                     message.InvocationId,
                     false,
                     MessageTransmitter!);
 
-            await InvocationProcessor.ProcessAsync(context, protocol);
+            await InvocationProcessor.ProcessAsync(context);
         }
 
-        private async Task ProcessNotifiableInvocationMessageAsync(
-            IClient<T> client,
-            IncomingNotifiableInvocationMessage message,
-            IProtocol protocol)
+        private async Task ProcessNotifiableInvocationMessageAsync(IncomingNotifiableInvocationMessage message)
         {
             var context = new NotifiableInvocationContext<T>(
                     Hub,
                     ServiceProvider,
-                    client,
+                    Client,
                     message.HandlerName,
                     message.Args);
 
-            await InvocationProcessor.ProcessAsync(context, protocol);
+            await InvocationProcessor.ProcessAsync(context);
         }
     }
 }

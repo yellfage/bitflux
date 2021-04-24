@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 
-using Yellfage.Wst.Communication;
 using Yellfage.Wst.Filters.Internal;
 
 namespace Yellfage.Wst.Internal
@@ -9,26 +8,29 @@ namespace Yellfage.Wst.Internal
     internal class InvocationProcessor : IInvocationProcessor
     {
         private IHandlerDescriptorProvider HandlerDescriptorProvider { get; }
+        private IArgumentConverter ArgumentConverter { get; }
         private IFilterExecutor FilterExecutor { get; }
         private IHandlerExecutor HandlerExecutor { get; }
 
         public InvocationProcessor(
             IHandlerDescriptorProvider handlerDescriptorProvider,
+            IArgumentConverter argumentConverter,
             IFilterExecutor filterExecutor,
             IHandlerExecutor handlerExecutor)
         {
             HandlerDescriptorProvider = handlerDescriptorProvider;
+            ArgumentConverter = argumentConverter;
             FilterExecutor = filterExecutor;
             HandlerExecutor = handlerExecutor;
         }
 
-        public async Task ProcessAsync<T>(IInvocationContext<T> context, IProtocol protocol)
+        public async Task ProcessAsync<T>(IInvocationContext<T> context)
         {
             if (HandlerDescriptorProvider.TryGet(
                 context.HandlerName,
                 out HandlerDescriptor? handlerDescriptor))
             {
-                if (!BindArguments(context.Args, handlerDescriptor.ParameterTypes, protocol))
+                if (!BindArguments(context.Args, handlerDescriptor.ParameterTypes))
                 {
                     await context.ReplyErrorAsync($"Unable to bind the '{context.HandlerName}' handler " +
                         "parameters with provided arguments");
@@ -47,18 +49,18 @@ namespace Yellfage.Wst.Internal
             }
         }
 
-        private bool BindArguments(object?[] args, Type[] parameterTypes, IProtocol protocol)
+        private bool BindArguments(object?[] arguments, Type[] parameterTypes)
         {
-            if (parameterTypes.Length != args.Length)
+            if (parameterTypes.Length != arguments.Length)
             {
                 return false;
             }
 
             for (int i = 0; i < parameterTypes.Length; i++)
             {
-                if (protocol.TryConvertValue(args[i], parameterTypes[i], out object? convertedValue))
+                if (ArgumentConverter.TryConvert(arguments[i], parameterTypes[i], out object? convertedValue))
                 {
-                    args[i] = convertedValue;
+                    arguments[i] = convertedValue;
                 }
                 else
                 {

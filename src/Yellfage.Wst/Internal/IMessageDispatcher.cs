@@ -1,12 +1,9 @@
-using System.Net.WebSockets;
 using System.Threading.Tasks;
-
-using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Internal
 {
-    internal interface IMessageDispatcher<T>
+    internal interface IMessageDispatcher
     {
-        Task StartAcceptingAsync(WebSocket webSocket, IProtocol protocol, IClient<T> client);
+        Task StartAcceptingAsync();
     }
 }
