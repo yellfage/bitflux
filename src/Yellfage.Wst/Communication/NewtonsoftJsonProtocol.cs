@@ -29,10 +29,10 @@ namespace Yellfage.Wst.Communication
             SerializerSettings = serializerSettings;
         }
 
-        public ArraySegment<byte> Serialize(OutgoingMessage message)
+        public ArraySegment<byte> Serialize(object value)
         {
             return Encoding.UTF8.GetBytes(
-                JsonConvert.SerializeObject(message, SerializerSettings));
+                JsonConvert.SerializeObject(value, SerializerSettings));
         }
 
         public bool TryDeserialize(
