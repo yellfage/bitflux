@@ -6,11 +6,11 @@ namespace Yellfage.Wst.Filters.Internal
 {
     internal class FilterExecutor : IFilterExecutor
     {
-        private IFilterPipelineBuilder FilterPipelineBuilder { get; }
+        private IFilterPipelineFactory FilterPipelineFactory { get; }
 
-        public FilterExecutor(IFilterPipelineBuilder filterPipelineBuilder)
+        public FilterExecutor(IFilterPipelineFactory filterPipelineFactory)
         {
-            FilterPipelineBuilder = filterPipelineBuilder;
+            FilterPipelineFactory = filterPipelineFactory;
         }
 
         public async Task ExecuteConnectionFiltersAsync<T>(
@@ -18,8 +18,8 @@ namespace Yellfage.Wst.Filters.Internal
             IConnectionContext<T> context,
             Func<Task> endpoint)
         {
-            await FilterPipelineBuilder
-                    .BuildConnectionPipeline(filters, context, endpoint)
+            await FilterPipelineFactory
+                    .CreateConnectionPipeline(filters, context, endpoint)
                     .Invoke();
         }
 
@@ -28,8 +28,8 @@ namespace Yellfage.Wst.Filters.Internal
             IDisconnectionContext<T> context,
             Func<Task> endpoint)
         {
-            await FilterPipelineBuilder
-                    .BuildDisconnectionPipeline(filters, context, endpoint)
+            await FilterPipelineFactory
+                    .CreateDisconnectionPipeline(filters, context, endpoint)
                     .Invoke();
         }
 
@@ -38,8 +38,8 @@ namespace Yellfage.Wst.Filters.Internal
             IInvocationContext<T> context,
             Func<Task> endpoint)
         {
-            await FilterPipelineBuilder
-                    .BuildInvocationPipeline(filters, context, endpoint)
+            await FilterPipelineFactory
+                    .CreateInvocationPipeline(filters, context, endpoint)
                     .Invoke();
         }
     }

@@ -21,7 +21,7 @@ namespace Yellfage.Wst
                 .AddSingleton<WstMarkerService>()
                 .AddSingleton<IFilterExplorer, FilterExplorer>()
                 .AddSingleton<IFilterExecutor, FilterExecutor>()
-                .AddSingleton<IFilterPipelineBuilder, FilterPipelineBuilder>()
+                .AddSingleton<IFilterPipelineFactory, FilterPipelineFactory>()
                 .AddSingleton<IHandlerExplorer, HandlerExplorer>()
                 .AddSingleton<IHandlerExecutor, HandlerExecutor>()
                 .AddSingleton<IHandlerNameResolver, HandlerNameResolver>()

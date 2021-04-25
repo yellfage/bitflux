@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Yellfage.Wst.Filters.Internal
 {
-    internal class FilterPipelineBuilder : IFilterPipelineBuilder
+    internal class FilterPipelineFactory : IFilterPipelineFactory
     {
-        public Func<Task> BuildConnectionPipeline<T>(
+        public Func<Task> CreateConnectionPipeline<T>(
             IList<IConnectionFilter> filters,
             IConnectionContext<T> context,
             Func<Task> endpoint)
@@ -17,7 +17,7 @@ namespace Yellfage.Wst.Filters.Internal
                 .Aggregate(endpoint, (next, filter) => () => filter.ApplyAsync(context, next));
         }
 
-        public Func<Task> BuildDisconnectionPipeline<T>(
+        public Func<Task> CreateDisconnectionPipeline<T>(
             IList<IDisconnectionFilter> filters,
             IDisconnectionContext<T> context,
             Func<Task> endpoint)
@@ -27,7 +27,7 @@ namespace Yellfage.Wst.Filters.Internal
                 .Aggregate(endpoint, (next, filter) => () => filter.ApplyAsync(context, next));
         }
 
-        public Func<Task> BuildInvocationPipeline<T>(
+        public Func<Task> CreateInvocationPipeline<T>(
             IList<IInvocationFilter> filters,
             IInvocationContext<T> context,
             Func<Task> endpoint)
