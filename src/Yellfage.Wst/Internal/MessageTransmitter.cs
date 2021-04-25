@@ -25,7 +25,7 @@ namespace Yellfage.Wst.Internal
             }
 
             await WebSocket.SendAsync(
-                Protocol.Serialize(message),
+                Protocol.SerializeMessage(message),
                 (WebSocketMessageType)Protocol.TransferFormat,
                 true,
                 cancellationToken);

@@ -7,7 +7,7 @@ namespace Yellfage.Wst.Communication
         string Name { get; }
         TransferFormat TransferFormat { get; }
 
-        ArraySegment<byte> Serialize(object value);
+        ArraySegment<byte> SerializeMessage(OutgoingMessage message);
         IncomingMessage Deserialize(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver);
         object? Convert(object? value, Type type);
     }
