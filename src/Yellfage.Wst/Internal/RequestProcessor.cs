@@ -67,7 +67,9 @@ namespace Yellfage.Wst.Internal
                     HubOptions.MessageSegmentSize,
                     HubOptions.MessageSegmentSize * HubOptions.MaxMessageSegments);
 
-                var messageDeserializer = new MessageDeserializer(protocol);
+                var messageTypeResolver = new MessageTypeResolver();
+
+                var messageDeserializer = new MessageDeserializer(protocol, messageTypeResolver);
 
                 var argumentConverter = new ArgumentConverter(protocol);
 

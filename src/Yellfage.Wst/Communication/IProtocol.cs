@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Yellfage.Wst.Communication
 {
@@ -9,7 +8,7 @@ namespace Yellfage.Wst.Communication
         TransferFormat TransferFormat { get; }
 
         ArraySegment<byte> Serialize(object value);
-        bool TryDeserialize(ArraySegment<byte> bytes, [MaybeNullWhen(false)] out IncomingMessage message);
+        IncomingMessage Deserialize(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver);
         object? Convert(object? value, Type type);
     }
 }

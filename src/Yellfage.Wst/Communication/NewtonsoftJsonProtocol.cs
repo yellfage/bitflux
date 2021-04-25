@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -17,7 +16,7 @@ namespace Yellfage.Wst.Communication
         public NewtonsoftJsonProtocol() : this(
             new()
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
             })
         {
         }
@@ -35,40 +34,13 @@ namespace Yellfage.Wst.Communication
                 JsonConvert.SerializeObject(value, SerializerSettings));
         }
 
-        public bool TryDeserialize(
-            ArraySegment<byte> bytes,
-            [MaybeNullWhen(false)] out IncomingMessage message)
+        public IncomingMessage Deserialize(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
         {
-            try
-            {
-                var jObject = JObject.Parse(Encoding.UTF8.GetString(bytes));
+            var jObject = JObject.Parse(Encoding.UTF8.GetString(bytes));
 
-                message = jObject.ToObject<IncomingMessage>();
+            Type messageType = messageTypeResolver.Resolve(jObject.ToObject<IncomingMessage>()!);
 
-                switch (message!.Type)
-                {
-                    case IncomingMessageType.RegularInvocation:
-                        message = jObject.ToObject<IncomingRegularInvocationMessage>()!;
-
-                        break;
-
-                    case IncomingMessageType.NotifiableInvocation:
-                        message = jObject.ToObject<IncomingNotifiableInvocationMessage>()!;
-
-                        break;
-
-                    default:
-                        break;
-                };
-
-                return true;
-            }
-            catch
-            {
-                message = null;
-
-                return false;
-            }
+            return (IncomingMessage)jObject.ToObject(messageType)!;
         }
 
         public object? Convert(object? value, Type type)
