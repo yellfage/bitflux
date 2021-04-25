@@ -34,7 +34,7 @@ namespace Yellfage.Wst.Communication
                 JsonConvert.SerializeObject(message, SerializerSettings));
         }
 
-        public IncomingMessage Deserialize(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
+        public IncomingMessage DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
         {
             var jObject = JObject.Parse(Encoding.UTF8.GetString(bytes));
 

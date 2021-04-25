@@ -20,7 +20,7 @@ namespace Yellfage.Wst.Internal
         {
             try
             {
-                message = Protocol.Deserialize(bytes, MessageTypeResolver);
+                message = Protocol.DeserializeMessage(bytes, MessageTypeResolver);
             }
             catch
             {
