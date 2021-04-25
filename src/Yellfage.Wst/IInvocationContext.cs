@@ -10,7 +10,7 @@ namespace Yellfage.Wst
     {
         IClient<T> Caller { get; }
         string HandlerName { get; }
-        object?[] Args { get; }
+        IList<object?> Args { get; }
 
         Task ReplyAsync(object? payload, CancellationToken cancellationToken = default);
 

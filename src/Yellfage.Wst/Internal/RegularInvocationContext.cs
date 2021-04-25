@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Yellfage.Wst.Communication;
 
@@ -17,7 +18,7 @@ namespace Yellfage.Wst.Internal
             IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
-            object?[] args,
+            IList<object?> args,
             string invocationId,
             bool completed,
             IMessageTransmitter messageTransmitter) : base(hub, serviceProvider, caller, handlerName, args)

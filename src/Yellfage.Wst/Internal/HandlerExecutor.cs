@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +25,7 @@ namespace Yellfage.Wst.Internal
 
             object? result = await handlerDescriptor
                 .MethodExecutor
-                .ExecuteAsync(worker, context.Args);
+                .ExecuteAsync(worker, context.Args.ToArray());
 
             await context.ReplyAsync(result);
         }

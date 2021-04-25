@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Yellfage.Wst.Internal
 {
@@ -11,7 +12,7 @@ namespace Yellfage.Wst.Internal
             IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
-            object?[] args) : base(hub, serviceProvider, caller, handlerName, args)
+            IList<object?> args) : base(hub, serviceProvider, caller, handlerName, args)
         {
         }
 

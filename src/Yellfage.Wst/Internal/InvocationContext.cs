@@ -12,14 +12,14 @@ namespace Yellfage.Wst.Internal
         public IServiceProvider ServiceProvider { get; }
         public IClient<T> Caller { get; }
         public string HandlerName { get; }
-        public object?[] Args { get; }
+        public IList<object?> Args { get; }
 
         public InvocationContext(
             IHub<T> hub,
             IServiceProvider serviceProvider,
             IClient<T> caller,
             string handlerName,
-            object?[] args)
+            IList<object?> args)
         {
             Hub = hub;
             ServiceProvider = serviceProvider;

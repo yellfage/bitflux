@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Yellfage.Wst.Filters.Internal;
 
@@ -49,9 +50,9 @@ namespace Yellfage.Wst.Internal
             }
         }
 
-        private bool BindArguments(object?[] arguments, Type[] parameterTypes)
+        private bool BindArguments(IList<object?> arguments, Type[] parameterTypes)
         {
-            if (parameterTypes.Length != arguments.Length)
+            if (parameterTypes.Length != arguments.Count)
             {
                 return false;
             }
