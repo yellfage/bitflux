@@ -9,6 +9,6 @@ namespace Yellfage.Wst.Communication
 
         ArraySegment<byte> SerializeMessage(OutgoingMessage message);
         IncomingMessage DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver);
-        object? Convert(object? value, Type type);
+        object? ConvertValue(object? value, Type type);
     }
 }

@@ -17,7 +17,7 @@ namespace Yellfage.Wst.Internal
         {
             try
             {
-                convertedArgument = Protocol.Convert(argument, type);
+                convertedArgument = Protocol.ConvertValue(argument, type);
             }
             catch
             {

@@ -43,7 +43,7 @@ namespace Yellfage.Wst.Communication
             return (IncomingMessage)jObject.ToObject(messageType)!;
         }
 
-        public object? Convert(object? value, Type type)
+        public object? ConvertValue(object? value, Type type)
         {
             JToken jToken = value switch
             {
