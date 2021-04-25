@@ -1,5 +1,3 @@
-using System;
-
 namespace Yellfage.Wst.Communication
 {
     public class IncomingMessage
@@ -8,7 +6,7 @@ namespace Yellfage.Wst.Communication
 
         public virtual bool IsValid()
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
