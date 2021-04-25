@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -31,7 +32,7 @@ namespace Yellfage.Wst.Internal
                 context.HandlerName,
                 out HandlerDescriptor? handlerDescriptor))
             {
-                if (!BindArguments(context.Args, handlerDescriptor.ParameterTypes))
+                if (!BindArguments(context.Args, handlerDescriptor.ParametersInfo))
                 {
                     await context.ReplyErrorAsync($"Unable to bind the '{context.HandlerName}' handler " +
                         "parameters with provided arguments");
@@ -50,16 +51,18 @@ namespace Yellfage.Wst.Internal
             }
         }
 
-        private bool BindArguments(IList<object?> arguments, Type[] parameterTypes)
+        private bool BindArguments(IList<object?> arguments, ParameterInfo[] parametersInfo)
         {
-            if (parameterTypes.Length != arguments.Count)
+            if (parametersInfo.Length != arguments.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < parameterTypes.Length; i++)
+            for (int i = 0; i < parametersInfo.Length; i++)
             {
-                if (ArgumentConverter.TryConvert(arguments[i], parameterTypes[i], out object? convertedValue))
+                Type parameterType = parametersInfo[i].ParameterType;
+
+                if (ArgumentConverter.TryConvert(arguments[i], parameterType, out object? convertedValue))
                 {
                     arguments[i] = convertedValue;
                 }

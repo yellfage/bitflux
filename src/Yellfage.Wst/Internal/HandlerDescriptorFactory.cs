@@ -39,17 +39,11 @@ namespace Yellfage.Wst.Internal
                 methodInfo,
                 methodInfo.IsAwaitable());
 
-            Type[] parameterTypes = methodInfo
-                .GetParameters()
-                .Select(parameterInfo => parameterInfo.ParameterType)
-                .ToArray();
-
             return new HandlerDescriptor(
                 name,
                 methodInfo,
                 methodExecutor,
                 workerType,
-                parameterTypes,
                 filterDescriptors);
         }
     }

@@ -12,7 +12,7 @@ namespace Yellfage.Wst.Internal
         public MethodInfo MethodInfo { get; }
         public MethodExecutor MethodExecutor { get; }
         public Type WorkerType { get; }
-        public Type[] ParameterTypes { get; }
+        public ParameterInfo[] ParametersInfo { get; }
         public IList<IInvocationFilter> Filters { get; }
 
         public HandlerDescriptor(
@@ -20,14 +20,13 @@ namespace Yellfage.Wst.Internal
             MethodInfo methodInfo,
             MethodExecutor methodExecutor,
             Type workerType,
-            Type[] parameterTypes,
             IList<IInvocationFilter> filters)
         {
             Name = name;
             MethodInfo = methodInfo;
             MethodExecutor = methodExecutor;
             WorkerType = workerType;
-            ParameterTypes = parameterTypes;
+            ParametersInfo = MethodInfo.GetParameters();
             Filters = filters;
         }
     }
