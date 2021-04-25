@@ -69,7 +69,7 @@ namespace Yellfage.Wst.Internal
                             return;
                         }
 
-                        fullMessage.AddRange(messageSegment.Take(receiveResult.Count));
+                        fullMessage.AddRange(messageSegment.AsEnumerable());
 
                         messageSegment = new byte[MessageSegmentSize];
 
@@ -77,7 +77,7 @@ namespace Yellfage.Wst.Internal
                     }
                     while (!receiveResult.EndOfMessage);
 
-                    fullMessage.AddRange(messageSegment.Take(receiveResult.Count));
+                    fullMessage.AddRange(messageSegment.AsEnumerable());
 
                     await processMessageBytesAsync.Invoke(fullMessage.ToArray());
                 }
