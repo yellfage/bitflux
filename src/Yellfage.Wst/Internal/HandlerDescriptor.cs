@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace Yellfage.Wst.Internal
         public MethodInfo MethodInfo { get; }
         public MethodExecutor MethodExecutor { get; }
         public Type WorkerType { get; }
-        public ParameterInfo[] ParametersInfo { get; }
+        public ParameterDescriptor[] ParameterDescriptors { get; }
         public IList<IInvocationFilter> Filters { get; }
 
         public HandlerDescriptor(
@@ -26,8 +27,13 @@ namespace Yellfage.Wst.Internal
             MethodInfo = methodInfo;
             MethodExecutor = methodExecutor;
             WorkerType = workerType;
-            ParametersInfo = MethodInfo.GetParameters();
+            ParameterDescriptors = SelectParameterDescriptors(methodInfo);
             Filters = filters;
+        }
+
+        private ParameterDescriptor[] SelectParameterDescriptors(MethodInfo info)
+        {
+            return info.GetParameters().Select(info => new ParameterDescriptor(info)).ToArray();
         }
     }
 }

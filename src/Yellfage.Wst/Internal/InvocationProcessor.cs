@@ -34,7 +34,7 @@ namespace Yellfage.Wst.Internal
                 context.HandlerName,
                 out HandlerDescriptor? handlerDescriptor))
             {
-                if (!BindArguments(context.Args, handlerDescriptor.ParametersInfo))
+                if (!BindArguments(context.Args, handlerDescriptor.ParameterDescriptors))
                 {
                     await context.ReplyErrorAsync($"Unable to bind the '{context.HandlerName}' handler " +
                         "parameters with provided arguments");
@@ -53,18 +53,19 @@ namespace Yellfage.Wst.Internal
             }
         }
 
-        private bool BindArguments(IList<object?> arguments, ParameterInfo[] parametersInfo)
+        private bool BindArguments(IList<object?> arguments, ParameterDescriptor[] parameterDescriptors)
         {
-            for (int i = 0; i < parametersInfo.Length; i++)
+            for (int i = 0; i < parameterDescriptors.Length; i++)
             {
-                ParameterInfo parameterInfo = parametersInfo[i];
+                ParameterDescriptor parameterDescriptor = parameterDescriptors[i];
+                ParameterInfo parameterInfo = parameterDescriptor.Info;
                 Type parameterType = parameterInfo.ParameterType;
 
                 bool isArgumentEnumerable = typeof(IEnumerable).IsAssignableFrom(arguments[i]?.GetType());
 
                 if (i < arguments.Count)
                 {
-                    if (parameterInfo.IsFlexible() && !isArgumentEnumerable)
+                    if (parameterDescriptor.IsFlexible && !isArgumentEnumerable)
                     {
                         arguments[i] = arguments.Skip(i).ToArray();
 
@@ -75,7 +76,7 @@ namespace Yellfage.Wst.Internal
                     {
                         arguments[i] = convertedValue;
 
-                        if (arguments[i] is null && !parameterInfo.IsNullable())
+                        if (!parameterDescriptor.IsNullable && arguments[i] is null)
                         {
                             return false;
                         }
