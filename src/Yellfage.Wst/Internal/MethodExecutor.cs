@@ -5,12 +5,12 @@ namespace Yellfage.Wst.Internal
 {
     internal class MethodExecutor
     {
-        private MethodInfo MethodInfo { get; }
+        private MethodInfo Info { get; }
         private bool IsAwaitable { get; }
 
-        public MethodExecutor(MethodInfo methodInfo, bool isAwaitable)
+        public MethodExecutor(MethodInfo info, bool isAwaitable)
         {
-            MethodInfo = methodInfo;
+            Info = info;
             IsAwaitable = isAwaitable;
         }
 
@@ -18,7 +18,7 @@ namespace Yellfage.Wst.Internal
             object? obj,
             params object?[] args)
         {
-            dynamic? result = MethodInfo.Invoke(obj, args);
+            dynamic? result = Info.Invoke(obj, args);
 
             if (IsAwaitable)
             {
