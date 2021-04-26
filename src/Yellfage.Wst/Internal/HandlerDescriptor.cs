@@ -10,7 +10,6 @@ namespace Yellfage.Wst.Internal
     internal class HandlerDescriptor
     {
         public string Name { get; }
-        public MethodInfo MethodInfo { get; }
         public MethodExecutor MethodExecutor { get; }
         public Type WorkerType { get; }
         public ParameterDescriptor[] ParameterDescriptors { get; }
@@ -18,16 +17,15 @@ namespace Yellfage.Wst.Internal
 
         public HandlerDescriptor(
             string name,
-            MethodInfo methodInfo,
+            MethodInfo info,
             MethodExecutor methodExecutor,
             Type workerType,
             IList<IInvocationFilter> filters)
         {
             Name = name;
-            MethodInfo = methodInfo;
             MethodExecutor = methodExecutor;
             WorkerType = workerType;
-            ParameterDescriptors = SelectParameterDescriptors(methodInfo);
+            ParameterDescriptors = SelectParameterDescriptors(info);
             Filters = filters;
         }
 
