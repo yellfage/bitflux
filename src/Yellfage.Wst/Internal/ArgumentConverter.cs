@@ -18,13 +18,15 @@ namespace Yellfage.Wst.Internal
             try
             {
                 convertedArgument = Protocol.ConvertValue(argument, type);
+
+                return true;
             }
             catch
             {
                 convertedArgument = null;
-            }
 
-            return convertedArgument is not null;
+                return false;
+            }
         }
     }
 }
