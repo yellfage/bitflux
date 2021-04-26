@@ -74,6 +74,11 @@ namespace Yellfage.Wst.Internal
                     if (ArgumentConverter.TryConvert(arguments[i], parameterType, out object? convertedValue))
                     {
                         arguments[i] = convertedValue;
+
+                        if (arguments[i] is null && !parameterInfo.IsNullable())
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
