@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -53,22 +54,30 @@ namespace Yellfage.Wst.Internal
 
         private bool BindArguments(IList<object?> arguments, ParameterInfo[] parametersInfo)
         {
-            if (parametersInfo.Length != arguments.Count)
-            {
-                return false;
-            }
-
             for (int i = 0; i < parametersInfo.Length; i++)
             {
-                Type parameterType = parametersInfo[i].ParameterType;
+                ParameterInfo parameterInfo = parametersInfo[i];
+                Type parameterType = parameterInfo.ParameterType;
 
-                if (ArgumentConverter.TryConvert(arguments[i], parameterType, out object? convertedValue))
+                if (i < arguments.Count)
                 {
-                    arguments[i] = convertedValue;
+                    if (ArgumentConverter.TryConvert(arguments[i], parameterType, out object? convertedValue))
+                    {
+                        arguments[i] = convertedValue;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
-                    return false;
+                    if (!parameterInfo.HasDefaultValue)
+                    {
+                        return false;
+                    }
+
+                    arguments.Insert(i, parameterInfo.DefaultValue);
                 }
             }
 
