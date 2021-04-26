@@ -34,13 +34,13 @@ namespace Yellfage.Wst.Communication
                 JsonConvert.SerializeObject(message, SerializerSettings));
         }
 
-        public IncomingMessage DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
+        public IncomingMessage? DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
         {
             var jObject = JObject.Parse(Encoding.UTF8.GetString(bytes));
 
-            Type messageType = messageTypeResolver.Resolve(jObject.ToObject<IncomingMessage>()!);
+            Type messageType = messageTypeResolver.Resolve(jObject.ToObject<IncomingMessage>());
 
-            return (IncomingMessage)jObject.ToObject(messageType)!;
+            return (IncomingMessage?)jObject.ToObject(messageType);
         }
 
         public object? ConvertValue(object? value, Type type)
