@@ -6,11 +6,13 @@ namespace Yellfage.Wst.Internal
     {
         public ParameterInfo Info { get; }
         public bool IsFlexible { get; }
+        public bool IsNullable { get; }
 
         public ParameterDescriptor(ParameterInfo info)
         {
             Info = info;
             IsFlexible = info.IsFlexible();
+            IsNullable = info.IsNullable();
         }
     }
 }
