@@ -29,12 +29,12 @@ namespace Yellfage.Wst.Internal
         }
 
         public override async Task ReplyAsync(
-            object? payload,
+            object? data,
             CancellationToken cancellationToken = default)
         {
             var message = new OutgoingSuccessRegularInvocationCompletionMessage(
                 InvocationId,
-                payload);
+                data);
 
             await SendCompletionMessageAsync(message, cancellationToken);
         }

@@ -12,7 +12,7 @@ namespace Yellfage.Wst
         string HandlerName { get; }
         IList<object?> Args { get; }
 
-        Task ReplyAsync(object? payload, CancellationToken cancellationToken = default);
+        Task ReplyAsync(object? data, CancellationToken cancellationToken = default);
 
         Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
 

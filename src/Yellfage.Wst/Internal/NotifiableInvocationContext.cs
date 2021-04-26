@@ -16,7 +16,7 @@ namespace Yellfage.Wst.Internal
         {
         }
 
-        public override Task ReplyAsync(object? payload, CancellationToken cancellationToken = default)
+        public override Task ReplyAsync(object? data, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

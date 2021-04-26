@@ -28,7 +28,7 @@ namespace Yellfage.Wst.Internal
             Args = args;
         }
 
-        public abstract Task ReplyAsync(object? payload, CancellationToken cancellationToken = default);
+        public abstract Task ReplyAsync(object? data, CancellationToken cancellationToken = default);
 
         public abstract Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
 

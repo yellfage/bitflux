@@ -2,13 +2,13 @@ namespace Yellfage.Wst.Communication
 {
     public class OutgoingSuccessRegularInvocationCompletionMessage : OutgoingRegularInvocationCompletionMessage
     {
-        public object? Payload { get; }
+        public object? Data { get; }
 
         public OutgoingSuccessRegularInvocationCompletionMessage(
-            string invocationId, object? payload) : base(
-                OutgoingMessageType.SuccessRegularInvocationCompletion, invocationId)
+            string invocationId, object? data) :
+                base(OutgoingMessageType.SuccessRegularInvocationCompletion, invocationId)
         {
-            Payload = payload;
+            Data = data;
         }
     }
 }
