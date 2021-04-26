@@ -36,11 +36,11 @@ namespace Yellfage.Wst.Communication
 
         public IncomingMessage? DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
         {
-            var jObject = JObject.Parse(Encoding.UTF8.GetString(bytes));
+            var jToken = JToken.Parse(Encoding.UTF8.GetString(bytes));
 
-            Type messageType = messageTypeResolver.Resolve(jObject.ToObject<IncomingMessage>());
+            Type messageType = messageTypeResolver.Resolve(jToken.ToObject<IncomingMessage>());
 
-            return (IncomingMessage?)jObject.ToObject(messageType);
+            return (IncomingMessage?)jToken.ToObject(messageType);
         }
 
         public object? ConvertValue(object? value, Type type)
