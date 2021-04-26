@@ -61,11 +61,11 @@ namespace Yellfage.Wst.Internal
                 ParameterInfo parameterInfo = parameterDescriptor.Info;
                 Type parameterType = parameterInfo.ParameterType;
 
-                bool isArgumentEnumerable = typeof(IEnumerable).IsAssignableFrom(arguments[i]?.GetType());
+                bool isArgumentCollection = typeof(ICollection).IsAssignableFrom(arguments[i]?.GetType());
 
                 if (i < arguments.Count)
                 {
-                    if (parameterDescriptor.IsFlexible && !isArgumentEnumerable)
+                    if (parameterDescriptor.IsFlexible && !isArgumentCollection)
                     {
                         arguments[i] = arguments.Skip(i).ToArray();
 
