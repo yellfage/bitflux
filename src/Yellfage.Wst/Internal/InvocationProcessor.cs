@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 
 using Yellfage.Wst.Filters.Internal;
@@ -59,8 +60,17 @@ namespace Yellfage.Wst.Internal
                 ParameterInfo parameterInfo = parametersInfo[i];
                 Type parameterType = parameterInfo.ParameterType;
 
+                bool isArgumentEnumerable = typeof(IEnumerable).IsAssignableFrom(arguments[i]?.GetType());
+
                 if (i < arguments.Count)
                 {
+                    if (parameterInfo.IsFlexible() && !isArgumentEnumerable)
+                    {
+                        arguments[i] = arguments.Skip(i).ToArray();
+
+                        arguments.RemoveRange(i + 1);
+                    }
+
                     if (ArgumentConverter.TryConvert(arguments[i], parameterType, out object? convertedValue))
                     {
                         arguments[i] = convertedValue;
