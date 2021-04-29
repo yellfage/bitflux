@@ -7,7 +7,7 @@ using Yellfage.Wst.Filters.Internal;
 
 namespace Yellfage.Wst
 {
-    public static class WstAddingServiceCollectionExtensions
+    public static class IServiceCollectionExtensions
     {
         public static void AddWst(this IServiceCollection services)
         {
