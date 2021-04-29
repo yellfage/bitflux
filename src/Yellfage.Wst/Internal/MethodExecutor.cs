@@ -8,10 +8,10 @@ namespace Yellfage.Wst.Internal
         private MethodInfo Info { get; }
         private bool IsAwaitable { get; }
 
-        public MethodExecutor(MethodInfo info, bool isAwaitable)
+        public MethodExecutor(MethodInfo info)
         {
             Info = info;
-            IsAwaitable = isAwaitable;
+            IsAwaitable = info.IsAwaitable();
         }
 
         public async Task<object?> ExecuteAsync(

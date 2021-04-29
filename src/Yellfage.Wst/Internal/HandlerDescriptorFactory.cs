@@ -35,9 +35,7 @@ namespace Yellfage.Wst.Internal
                 .Concat(localFilters)
                 .ToList();
 
-            var methodExecutor = new MethodExecutor(
-                methodInfo,
-                methodInfo.IsAwaitable());
+            var methodExecutor = new MethodExecutor(methodInfo);
 
             return new HandlerDescriptor(
                 name,
