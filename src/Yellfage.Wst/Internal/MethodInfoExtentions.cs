@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Yellfage.Wst.Internal
 {
-    internal static class CheckingAwaitableMethodInfoExtentions
+    internal static class MethodInfoExtentions
     {
         public static bool IsAwaitable(this MethodInfo methodInfo)
         {
