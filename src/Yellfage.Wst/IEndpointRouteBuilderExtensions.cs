@@ -17,7 +17,7 @@ using Yellfage.Wst.Communication.Internal;
 namespace Yellfage.Wst
 {
     // TODO: validate options
-    public static class WstHubMappingEndpointRouteBuilderExtensions
+    public static class IEndpointRouteBuilderExtensions
     {
         public static WstHubEndpointConventionBuilder<T> MapWstHub<T, THub>(
             this IEndpointRouteBuilder endpoints,
