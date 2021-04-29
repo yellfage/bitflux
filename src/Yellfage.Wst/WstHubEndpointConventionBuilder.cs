@@ -60,9 +60,13 @@ namespace Yellfage.Wst
             }
 
             // TODO: incapsulate {
+            IEnumerable<IInvocationFilter> localFilters = FilterExplorer
+                .ExploreInvocationFilters(type)
+                .OrderByDescending(filter => filter.Priority);
+
             IEnumerable<IInvocationFilter> rawFilters = HubFilters
                 .OfType<IInvocationFilter>()
-                .Concat(FilterExplorer.ExploreInvocationFilters(type));
+                .Concat(localFilters);
 
             IEnumerable<Type> disabledFilterTypes = DisabledFilterTypeExplorer.ExploreAll(type);
 

@@ -35,8 +35,11 @@ namespace Yellfage.Wst.Internal
             string name = HandlerNameResolver.Resolve(methodInfo);
 
             // TODO: incapsulate {
-            IEnumerable<IInvocationFilter> rawFilters = externalFilters
-                .Concat(FilterExplorer.ExploreInvocationFilters(methodInfo));
+            IEnumerable<IInvocationFilter> localFilters = FilterExplorer
+                .ExploreInvocationFilters(methodInfo)
+                .OrderByDescending(filter => filter.Priority);
+
+            IEnumerable<IInvocationFilter> rawFilters = externalFilters.Concat(localFilters);
 
             IEnumerable<Type> disabledFilterTypes = DisabledFilterTypeExplorer.ExploreAll(methodInfo);
 

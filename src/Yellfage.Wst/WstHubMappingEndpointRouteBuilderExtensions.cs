@@ -77,7 +77,9 @@ namespace Yellfage.Wst
             var handlerExplorer = serviceProvider.GetRequiredService<IHandlerExplorer>();
             var handlerDescriptorFactory = serviceProvider.GetRequiredService<IHandlerDescriptorFactory>();
 
-            IEnumerable<IFilter> filters = filterExplorer.ExploreAllFilters(hub.GetType());
+            IEnumerable<IFilter> filters = filterExplorer
+                .ExploreAllFilters(hub.GetType())
+                .OrderByDescending(filter => filter.Priority);
 
             var handlerDescriptors = new List<HandlerDescriptor>();
 
