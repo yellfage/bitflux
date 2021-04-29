@@ -35,7 +35,7 @@ namespace Yellfage.Wst.Internal
 
         public async Task StartProcessingAsync()
         {
-            Hub.Clients.All.Add(Client.Id, Client);
+            Hub.Clients.All.Add(Client.HttpContext.Connection.Id, Client);
 
             await ApplyConnectionFiltersAsync();
 
@@ -43,7 +43,7 @@ namespace Yellfage.Wst.Internal
 
             await ApplyDisconnectionFiltersAsync();
 
-            Hub.Clients.All.Remove(Client.Id);
+            Hub.Clients.All.Remove(Client.HttpContext.Connection.Id);
         }
 
         private async Task ApplyConnectionFiltersAsync()

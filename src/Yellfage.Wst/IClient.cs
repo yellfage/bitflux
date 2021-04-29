@@ -1,11 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Yellfage.Wst
 {
     public interface IClient<T>
     {
-        public string Id { get; }
+        HttpContext HttpContext { get; }
 
         Task NotifyAsync(string handlerName, CancellationToken cancellationToken = default);
         Task NotifyAsync<TArg1>(string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);

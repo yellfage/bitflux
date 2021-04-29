@@ -60,7 +60,7 @@ namespace Yellfage.Wst.Internal
                 var messageTransmitter = new MessageTransmitter(webSocket, protocol);
                 var clientDisconnector = new ClientDisconnector(webSocket);
 
-                var client = new Client<T>(context.Connection.Id, messageTransmitter, clientDisconnector);
+                var client = new Client<T>(context, messageTransmitter, clientDisconnector);
 
                 var messageReceiver = new MessageReceiver(
                     webSocket,

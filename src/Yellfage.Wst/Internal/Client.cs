@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 using Yellfage.Wst.Communication;
 
@@ -8,17 +9,17 @@ namespace Yellfage.Wst.Internal
 {
     internal class Client<T> : IClient<T>
     {
-        public string Id { get; }
+        public HttpContext HttpContext { get; }
 
         private IMessageTransmitter MessageTransmitter { get; }
         private IClientDisconnector ClientDisconnector { get; }
 
         public Client(
-            string id,
+            HttpContext httpContext,
             IMessageTransmitter messageTransmitter,
             IClientDisconnector clientDisconnector)
         {
-            Id = id;
+            HttpContext = httpContext;
             MessageTransmitter = messageTransmitter;
             ClientDisconnector = clientDisconnector;
         }
