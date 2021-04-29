@@ -14,6 +14,8 @@ namespace Yellfage.Wst.Authorization
         public string? Roles { get; set; }
         public string? AuthenticationSchemes { get; set; }
 
+        public int Priority => 1;
+
         public AuthorizationFilterAttribute()
         {
         }
