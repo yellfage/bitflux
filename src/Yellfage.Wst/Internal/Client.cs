@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Http;
 
 using Yellfage.Wst.Communication;
@@ -10,6 +11,7 @@ namespace Yellfage.Wst.Internal
     internal class Client<T> : IClient<T>
     {
         public HttpContext HttpContext { get; }
+        public IClientMetadataManager<T> Metadata { get; }
 
         private IMessageTransmitter MessageTransmitter { get; }
         private IClientDisconnector ClientDisconnector { get; }
@@ -20,6 +22,7 @@ namespace Yellfage.Wst.Internal
             IClientDisconnector clientDisconnector)
         {
             HttpContext = httpContext;
+            Metadata = new ClientMetadataManager<T>(new ConcurrentDictionary<string, object>());
             MessageTransmitter = messageTransmitter;
             ClientDisconnector = clientDisconnector;
         }
