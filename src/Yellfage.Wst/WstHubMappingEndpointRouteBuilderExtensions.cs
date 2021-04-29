@@ -72,6 +72,8 @@ namespace Yellfage.Wst
             IServiceProvider serviceProvider = endpoints.ServiceProvider;
 
             var filterExplorer = serviceProvider.GetRequiredService<IFilterExplorer>();
+            var disabledFilterTypeExplorer = serviceProvider.GetRequiredService<IDisabledFilterTypeExplorer>();
+            var filterSifter = serviceProvider.GetRequiredService<IFilterSifter>();
             var handlerExplorer = serviceProvider.GetRequiredService<IHandlerExplorer>();
             var handlerDescriptorFactory = serviceProvider.GetRequiredService<IHandlerDescriptorFactory>();
 
@@ -82,7 +84,7 @@ namespace Yellfage.Wst
             var hubDescriptor = new HubDescriptor<T>(
                 hub, serviceProvider, options, filters, handlerDescriptors);
 
-            IRequestProcessor requestProcessor = SetupRequestProcessor<T>(hubDescriptor);
+            IRequestProcessor requestProcessor = SetupRequestProcessor(hubDescriptor);
 
             WebSocketOptions webSocketOptions = SetupWebSocketOptions(options);
 
@@ -96,6 +98,8 @@ namespace Yellfage.Wst
 
             return new WstHubEndpointConventionBuilder<T>(
                 filterExplorer,
+                disabledFilterTypeExplorer,
+                filterSifter,
                 handlerExplorer,
                 handlerDescriptorFactory,
                 endpointConventionBuilder,

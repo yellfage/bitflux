@@ -20,6 +20,8 @@ namespace Yellfage.Wst
             services
                 .AddSingleton<WstMarkerService>()
                 .AddSingleton<IFilterExplorer, FilterExplorer>()
+                .AddSingleton<IDisabledFilterTypeExplorer, DisabledFilterTypeExplorer>()
+                .AddSingleton<IFilterSifter, FilterSifter>()
                 .AddSingleton<IFilterExecutor, FilterExecutor>()
                 .AddSingleton<IFilterPipelineFactory, FilterPipelineFactory>()
                 .AddSingleton<IHandlerExplorer, HandlerExplorer>()

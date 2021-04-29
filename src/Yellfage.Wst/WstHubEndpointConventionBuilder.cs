@@ -12,15 +12,18 @@ namespace Yellfage.Wst
     public class WstHubEndpointConventionBuilder<T> : IEndpointConventionBuilder
     {
         private IFilterExplorer FilterExplorer { get; }
+        private IDisabledFilterTypeExplorer DisabledFilterTypeExplorer { get; }
+        private IFilterSifter FilterSifter { get; }
         private IHandlerExplorer HandlerExplorer { get; }
         private IHandlerDescriptorFactory HandlerDescriptorFactory { get; }
         private IEndpointConventionBuilder EndpointConventionBuilder { get; }
-
         private IEnumerable<IFilter> HubFilters { get; }
         private IList<HandlerDescriptor> HandlerDescriptors { get; }
 
         internal WstHubEndpointConventionBuilder(
             IFilterExplorer filterExplorer,
+            IDisabledFilterTypeExplorer disabledFilterTypeExplorer,
+            IFilterSifter filterSifter,
             IHandlerExplorer handlerExplorer,
             IHandlerDescriptorFactory handlerDescriptorFactory,
             IEndpointConventionBuilder endpointConventionBuilder,
@@ -28,6 +31,8 @@ namespace Yellfage.Wst
             IList<HandlerDescriptor> handlerDescriptors)
         {
             FilterExplorer = filterExplorer;
+            DisabledFilterTypeExplorer = disabledFilterTypeExplorer;
+            FilterSifter = filterSifter;
             HandlerExplorer = handlerExplorer;
             HandlerDescriptorFactory = handlerDescriptorFactory;
             EndpointConventionBuilder = endpointConventionBuilder;
@@ -54,11 +59,16 @@ namespace Yellfage.Wst
                     $"from '{typeof(Worker<T>)}'");
             }
 
-            IEnumerable<IInvocationFilter> localFilters = FilterExplorer.ExploreInvocationFilters(type);
-
-            IEnumerable<IInvocationFilter> filters = HubFilters
+            // TODO: incapsulate {
+            IEnumerable<IInvocationFilter> rawFilters = HubFilters
                 .OfType<IInvocationFilter>()
-                .Concat(localFilters);
+                .Concat(FilterExplorer.ExploreInvocationFilters(type));
+
+            IEnumerable<Type> disabledFilterTypes = DisabledFilterTypeExplorer.ExploreAll(type);
+
+            IEnumerable<IInvocationFilter> filters = FilterSifter
+                .Sift<IInvocationFilter>(rawFilters, disabledFilterTypes);
+            // }
 
             IList<HandlerDescriptor> handlerDescriptors = HandlerExplorer
                 .ExploreWorker(type)

@@ -12,13 +12,19 @@ namespace Yellfage.Wst.Internal
     {
         private IHandlerNameResolver HandlerNameResolver { get; }
         private IFilterExplorer FilterExplorer { get; }
+        private IDisabledFilterTypeExplorer DisabledFilterTypeExplorer { get; }
+        private IFilterSifter FilterSifter { get; }
 
         public HandlerDescriptorFactory(
             IHandlerNameResolver handlerNameResolver,
-            IFilterExplorer filterExplorer)
+            IFilterExplorer filterExplorer,
+            IDisabledFilterTypeExplorer disabledFilterTypeExplorer,
+            IFilterSifter filterSifter)
         {
             HandlerNameResolver = handlerNameResolver;
             FilterExplorer = filterExplorer;
+            DisabledFilterTypeExplorer = disabledFilterTypeExplorer;
+            FilterSifter = filterSifter;
         }
 
         public HandlerDescriptor Create(
@@ -28,12 +34,16 @@ namespace Yellfage.Wst.Internal
         {
             string name = HandlerNameResolver.Resolve(methodInfo);
 
-            IEnumerable<IInvocationFilter> localFilters = FilterExplorer
-                .ExploreInvocationFilters(methodInfo);
+            // TODO: incapsulate {
+            IEnumerable<IInvocationFilter> rawFilters = externalFilters
+                .Concat(FilterExplorer.ExploreInvocationFilters(methodInfo));
 
-            IList<IInvocationFilter> filters = externalFilters
-                .Concat(localFilters)
+            IEnumerable<Type> disabledFilterTypes = DisabledFilterTypeExplorer.ExploreAll(methodInfo);
+
+            IList<IInvocationFilter> filters = FilterSifter
+                .Sift<IInvocationFilter>(rawFilters, disabledFilterTypes)
                 .ToList();
+            // }
 
             var methodExecutor = new MethodExecutor(methodInfo);
 
