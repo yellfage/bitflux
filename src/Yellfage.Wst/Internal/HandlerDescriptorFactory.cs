@@ -31,7 +31,7 @@ namespace Yellfage.Wst.Internal
             IEnumerable<IInvocationFilter> localFilters = FilterExplorer
                 .ExploreInvocationFilters(methodInfo);
 
-            IList<IInvocationFilter> filterDescriptors = externalFilters
+            IList<IInvocationFilter> filters = externalFilters
                 .Concat(localFilters)
                 .ToList();
 
@@ -42,7 +42,7 @@ namespace Yellfage.Wst.Internal
                 methodInfo,
                 methodExecutor,
                 workerType,
-                filterDescriptors);
+                filters);
         }
     }
 }
