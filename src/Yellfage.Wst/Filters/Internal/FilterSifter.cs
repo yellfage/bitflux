@@ -11,7 +11,8 @@ namespace Yellfage.Wst.Filters.Internal
             IEnumerable<Type> disabledFilterTypes) where TFilter : IFilter
         {
             return filters
-                .Where(filter => !disabledFilterTypes.Contains(filter.GetType()))
+                .Where(filter => !disabledFilterTypes.Any(
+                    disabledFilterType => disabledFilterType.IsAssignableFrom(filter.GetType())))
                 .OfType<TFilter>();
         }
     }
