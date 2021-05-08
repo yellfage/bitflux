@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 using Yellfage.Wst.Communication;
 
@@ -13,7 +14,7 @@ namespace Yellfage.Wst.Internal
         private IMessageDeserializer MessageDeserializer { get; }
         private IMessageTransmitter MessageTransmitter { get; }
         private IInvocationProcessor InvocationProcessor { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private IServiceProvider GlobalServiceProvider { get; }
 
         public MessageDispatcher(
             IHub<T> hub,
@@ -22,7 +23,7 @@ namespace Yellfage.Wst.Internal
             IMessageDeserializer messageDeserializer,
             IMessageTransmitter messageTransmitter,
             IInvocationProcessor invocationProcessor,
-            IServiceProvider serviceProvider)
+            IServiceProvider globalServiceProvider)
         {
             Hub = hub;
             Client = client;
@@ -30,7 +31,7 @@ namespace Yellfage.Wst.Internal
             MessageDeserializer = messageDeserializer;
             MessageTransmitter = messageTransmitter;
             InvocationProcessor = invocationProcessor;
-            ServiceProvider = serviceProvider;
+            GlobalServiceProvider = globalServiceProvider;
         }
 
         public async Task StartAcceptingAsync()
@@ -49,11 +50,15 @@ namespace Yellfage.Wst.Internal
                     return;
                 }
 
+                using IServiceScope scope = GlobalServiceProvider.CreateScope();
+
+                IServiceProvider serviceProvider = scope.ServiceProvider;
+
                 InvocationContext<T> context = incomingMessage switch
                 {
                     IncomingRegularInvocationMessage message => new RegularInvocationContext<T>(
                         Hub,
-                        ServiceProvider,
+                        serviceProvider,
                         Client,
                         message.HandlerName,
                         message.Args,
@@ -63,7 +68,7 @@ namespace Yellfage.Wst.Internal
 
                     IncomingNotifiableInvocationMessage message => new NotifiableInvocationContext<T>(
                         Hub,
-                        ServiceProvider,
+                        serviceProvider,
                         Client,
                         message.HandlerName,
                         message.Args),

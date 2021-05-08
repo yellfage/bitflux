@@ -38,7 +38,7 @@ namespace Yellfage.Wst
             {
                 if (typeof(Worker).IsAssignableFrom(type))
                 {
-                    services.AddTransient(type);
+                    services.AddScoped(type);
                 }
             }
         }
