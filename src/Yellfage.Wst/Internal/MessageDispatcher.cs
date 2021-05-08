@@ -49,55 +49,34 @@ namespace Yellfage.Wst.Internal
                     return;
                 }
 
-                switch (incomingMessage)
+                InvocationContext<T> context = incomingMessage switch
                 {
-                    case IncomingRegularInvocationMessage message:
-                        await ProcessRegularInvocationMessageAsync(message);
+                    IncomingRegularInvocationMessage message => new RegularInvocationContext<T>(
+                        Hub,
+                        ServiceProvider,
+                        Client,
+                        message.HandlerName,
+                        message.Args,
+                        message.InvocationId,
+                        false,
+                        MessageTransmitter!),
 
-                        break;
+                    IncomingNotifiableInvocationMessage message => new NotifiableInvocationContext<T>(
+                        Hub,
+                        ServiceProvider,
+                        Client,
+                        message.HandlerName,
+                        message.Args),
 
-                    case IncomingNotifiableInvocationMessage message:
-                        await ProcessNotifiableInvocationMessageAsync(message);
+                    _ => throw new InvalidOperationException("Unknown message type")
+                };
 
-                        break;
-
-                    default:
-                        await Client.DisconnectAsync("Unknown message type");
-
-                        break;
-                }
+                await InvocationProcessor.ProcessAsync(context);
             }
             else
             {
                 await Client.DisconnectAsync("Unable to deserialize received data");
             }
-        }
-
-        private async Task ProcessRegularInvocationMessageAsync(IncomingRegularInvocationMessage message)
-        {
-            var context = new RegularInvocationContext<T>(
-                    Hub,
-                    ServiceProvider,
-                    Client,
-                    message.HandlerName,
-                    message.Args,
-                    message.InvocationId,
-                    false,
-                    MessageTransmitter!);
-
-            await InvocationProcessor.ProcessAsync(context);
-        }
-
-        private async Task ProcessNotifiableInvocationMessageAsync(IncomingNotifiableInvocationMessage message)
-        {
-            var context = new NotifiableInvocationContext<T>(
-                    Hub,
-                    ServiceProvider,
-                    Client,
-                    message.HandlerName,
-                    message.Args);
-
-            await InvocationProcessor.ProcessAsync(context);
         }
     }
 }
