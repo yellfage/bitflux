@@ -13,11 +13,19 @@ namespace Yellfage.Wst.Communication
 
         private JsonSerializerSettings SerializerSettings { get; }
 
-        public NewtonsoftJsonProtocol() : this(
-            new()
+        private static JsonSerializerSettings DefaultSerializerSettings => new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            })
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false,
+                    OverrideSpecifiedNames = true
+                }
+            }
+        };
+
+        public NewtonsoftJsonProtocol() : this(DefaultSerializerSettings)
         {
         }
 
