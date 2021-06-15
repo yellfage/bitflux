@@ -4,7 +4,7 @@ namespace Yellfage.Wst.Communication
     {
         public override bool IsValid()
         {
-            return HandlerName is not null && Args is not null;
+            return InvocationId is not null && HandlerName is not null && Args is not null;
         }
     }
 }

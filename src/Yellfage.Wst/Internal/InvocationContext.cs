@@ -11,6 +11,7 @@ namespace Yellfage.Wst.Internal
         public IHub<T> Hub { get; }
         public IServiceProvider ServiceProvider { get; }
         public IClient<T> Caller { get; }
+        public string Id { get; }
         public string HandlerName { get; }
         public IList<object?> Args { get; }
 
@@ -18,12 +19,14 @@ namespace Yellfage.Wst.Internal
             IHub<T> hub,
             IServiceProvider serviceProvider,
             IClient<T> caller,
+            string id,
             string handlerName,
             IList<object?> args)
         {
             Hub = hub;
             ServiceProvider = serviceProvider;
             Caller = caller;
+            Id = id;
             HandlerName = handlerName;
             Args = args;
         }

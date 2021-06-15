@@ -11,8 +11,9 @@ namespace Yellfage.Wst.Internal
             IHub<T> hub,
             IServiceProvider serviceProvider,
             IClient<T> caller,
+            string id,
             string handlerName,
-            IList<object?> args) : base(hub, serviceProvider, caller, handlerName, args)
+            IList<object?> args) : base(hub, serviceProvider, caller, id, handlerName, args)
         {
         }
 

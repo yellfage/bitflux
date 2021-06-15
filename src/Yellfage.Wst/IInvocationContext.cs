@@ -9,6 +9,7 @@ namespace Yellfage.Wst
     public interface IInvocationContext<T> : IFilterContext<T>
     {
         IClient<T> Caller { get; }
+        string Id { get; }
         string HandlerName { get; }
         IList<object?> Args { get; }
 

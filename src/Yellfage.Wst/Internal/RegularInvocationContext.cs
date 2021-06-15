@@ -9,7 +9,6 @@ namespace Yellfage.Wst.Internal
 {
     internal class RegularInvocationContext<T> : InvocationContext<T>
     {
-        private string InvocationId { get; }
         private bool Completed { get; set; }
         private IMessageTransmitter MessageTransmitter { get; }
 
@@ -17,13 +16,12 @@ namespace Yellfage.Wst.Internal
             IHub<T> hub,
             IServiceProvider serviceProvider,
             IClient<T> caller,
+            string id,
             string handlerName,
             IList<object?> args,
-            string invocationId,
             bool completed,
-            IMessageTransmitter messageTransmitter) : base(hub, serviceProvider, caller, handlerName, args)
+            IMessageTransmitter messageTransmitter) : base(hub, serviceProvider, caller, id, handlerName, args)
         {
-            InvocationId = invocationId;
             Completed = completed;
             MessageTransmitter = messageTransmitter;
         }
@@ -33,7 +31,7 @@ namespace Yellfage.Wst.Internal
             CancellationToken cancellationToken = default)
         {
             var message = new OutgoingSuccessRegularInvocationCompletionMessage(
-                InvocationId,
+                Id,
                 data);
 
             await SendCompletionMessageAsync(message, cancellationToken);
@@ -44,7 +42,7 @@ namespace Yellfage.Wst.Internal
             CancellationToken cancellationToken = default)
         {
             var message = new OutgoingFailedRegularInvocationCompletionMessage(
-                InvocationId,
+                Id,
                 error);
 
             await SendCompletionMessageAsync(message, cancellationToken);

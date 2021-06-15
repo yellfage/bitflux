@@ -52,24 +52,23 @@ namespace Yellfage.Wst.Internal
 
                 using IServiceScope scope = GlobalServiceProvider.CreateScope();
 
-                IServiceProvider serviceProvider = scope.ServiceProvider;
-
                 InvocationContext<T> context = incomingMessage switch
                 {
                     IncomingRegularInvocationMessage message => new RegularInvocationContext<T>(
                         Hub,
-                        serviceProvider,
+                        scope.ServiceProvider,
                         Client,
+                        message.InvocationId,
                         message.HandlerName,
                         message.Args,
-                        message.InvocationId,
                         false,
-                        MessageTransmitter!),
+                        MessageTransmitter),
 
                     IncomingNotifiableInvocationMessage message => new NotifiableInvocationContext<T>(
                         Hub,
-                        serviceProvider,
+                        scope.ServiceProvider,
                         Client,
+                        message.InvocationId,
                         message.HandlerName,
                         message.Args),
 
