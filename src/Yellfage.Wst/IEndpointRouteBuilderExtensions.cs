@@ -49,7 +49,8 @@ namespace Yellfage.Wst
 
             if (markerService is null)
             {
-                throw new InvalidOperationException("Required services not found. " +
+                throw new InvalidOperationException(
+                    "Required services not found. " +
                     "Please add all the required services by calling " +
                     "'IServiceCollection.AddWst' inside the 'ConfigureServices(...)' call " +
                     " in the application startup code");
@@ -59,9 +60,9 @@ namespace Yellfage.Wst
 
             if (hub is null)
             {
-                throw new InvalidOperationException("Unable to resolve the " +
-                    $"{typeof(THub).FullName} instance. Make sure you have added " +
-                    "the Hub to a dependency injection container");
+                throw new InvalidOperationException(
+                    $"Unable to resolve the {typeof(THub).FullName} instance." +
+                    " Make sure you have added the Hub to the dependency injection container");
             }
 
             if (!options.Protocols.Any())
