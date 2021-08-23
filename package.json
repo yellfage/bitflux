@@ -3,9 +3,9 @@
     "commit": "commit"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.1",
-    "@commitlint/prompt-cli": "^12.1.1",
-    "commitlint": "^12.1.1",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/prompt-cli": "^12.1.4",
+    "commitlint": "^12.1.4",
     "husky": "^6.0.0"
   }
 }

@@ -4,7 +4,7 @@ namespace Yellfage.Wst.Communication
     {
         public IncomingMessageType Type { get; set; }
 
-        public virtual bool IsValid()
+        internal virtual bool IsValid()
         {
             return false;
         }

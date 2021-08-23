@@ -2,8 +2,8 @@
 
 namespace Yellfage.Wst
 {
-    public abstract class Worker<T> : Worker
+    public abstract class Worker<TMarker> : Worker
     {
-        public IInvocationContext<T> Context { get; set; }
+        public IInvocationContext<TMarker> Context { get; set; }
     }
 }

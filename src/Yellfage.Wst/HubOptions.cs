@@ -1,30 +1,24 @@
-using System;
-using System.Collections.Generic;
-
-using Yellfage.Wst.Communication;
+using Yellfage.Wst.Configuration;
 
 namespace Yellfage.Wst
 {
-    public class HubOptions
+    public class HubOptions<TMarker>
     {
-        public ISet<string> AllowedOrigins { get; }
-        public TimeSpan KeepAliveInterval { get; set; }
-        public int MessageSegmentSize { get; set; }
-        public int MaxMessageSegments { get; set; }
-        public IList<IProtocol> Protocols { get; }
+        public CommunicationSettings Communication { get; set; }
 
-        public HubOptions(
-            ISet<string> allowedOrigins,
-            TimeSpan keepAliveInterval,
-            int messageSegmentSize,
-            int maxMessageSegments,
-            IList<IProtocol> protocols)
+        public HubOptions()
         {
-            AllowedOrigins = allowedOrigins;
-            KeepAliveInterval = keepAliveInterval;
-            MessageSegmentSize = messageSegmentSize;
-            MaxMessageSegments = maxMessageSegments;
-            Protocols = protocols;
+            Communication = new CommunicationSettings();
+        }
+
+        public HubOptions(CommunicationSettings communication)
+        {
+            Communication = communication;
+        }
+
+        internal void Validate()
+        {
+            Communication.Validate();
         }
     }
 }

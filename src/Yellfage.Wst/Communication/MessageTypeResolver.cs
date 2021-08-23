@@ -1,5 +1,7 @@
 using System;
 
+using Yellfage.Wst.Interior.Communication;
+
 namespace Yellfage.Wst.Communication
 {
     public class MessageTypeResolver : IMessageTypeResolver
@@ -9,7 +11,9 @@ namespace Yellfage.Wst.Communication
             return message?.Type switch
             {
                 IncomingMessageType.RegularInvocation => typeof(IncomingRegularInvocationMessage),
+
                 IncomingMessageType.NotifiableInvocation => typeof(IncomingNotifiableInvocationMessage),
+
                 _ => typeof(IncomingMessage)
             };
         }

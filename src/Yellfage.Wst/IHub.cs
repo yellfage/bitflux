@@ -1,9 +1,11 @@
+using Yellfage.Wst.Caching;
+
 namespace Yellfage.Wst
 {
-    public interface IHub<T>
+    public interface IHub<TMarker>
     {
-        IHubClientManager<T> Clients { get; }
-        IHubGroupManager<T> Groups { get; }
-        IHubMetadataManager<T> Metadata { get; }
+        IClientManager<TMarker> Clients { get; }
+        IGroupManager<TMarker> Groups { get; }
+        IHubCache<TMarker> Cache { get; }
     }
 }

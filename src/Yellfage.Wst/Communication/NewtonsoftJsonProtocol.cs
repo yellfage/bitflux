@@ -31,18 +31,20 @@ namespace Yellfage.Wst.Communication
 
         public NewtonsoftJsonProtocol(JsonSerializerSettings serializerSettings)
         {
-            Name = "yellfage.wst.json";
+            Name = "json";
             TransferFormat = TransferFormat.Text;
             SerializerSettings = serializerSettings;
         }
 
-        public ArraySegment<byte> SerializeMessage(OutgoingMessage message)
+        public ArraySegment<byte> Serialize(OutgoingMessage message)
         {
             return Encoding.UTF8.GetBytes(
                 JsonConvert.SerializeObject(message, SerializerSettings));
         }
 
-        public IncomingMessage? DeserializeMessage(ArraySegment<byte> bytes, IMessageTypeResolver messageTypeResolver)
+        public IncomingMessage? Deserialize(
+            ArraySegment<byte> bytes,
+            IMessageTypeResolver messageTypeResolver)
         {
             var jToken = JToken.Parse(Encoding.UTF8.GetString(bytes));
 
@@ -51,7 +53,7 @@ namespace Yellfage.Wst.Communication
             return (IncomingMessage?)jToken.ToObject(messageType);
         }
 
-        public object? ConvertValue(object? value, Type type)
+        public object? Convert(object? value, Type type)
         {
             JToken jToken = value switch
             {

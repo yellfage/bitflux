@@ -1,40 +1,92 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-using Yellfage.Wst.Internal;
-using Yellfage.Wst.Filters.Internal;
+using Yellfage.Wst.Bussing;
+using Yellfage.Wst.Caching;
+using Yellfage.Wst.Interior;
+using Yellfage.Wst.Communication;
+using Yellfage.Wst.Interior.Mapping;
+using Yellfage.Wst.Interior.Bussing;
+using Yellfage.Wst.Interior.Caching;
+using Yellfage.Wst.Interior.Handling;
+using Yellfage.Wst.Interior.Connection;
+using Yellfage.Wst.Interior.Invocation;
+using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Interior.Communication;
+using Yellfage.Wst.Interior.Disconnection;
 
 namespace Yellfage.Wst
 {
     public static class IServiceCollectionExtensions
     {
-        public static void AddWst(this IServiceCollection services)
+        public static IWstServerBuilder AddWst(this IServiceCollection services)
         {
-            AddMisc(services);
+            AddServices(services);
+            AddHubs(services);
             AddWorkers(services);
+
+            return new WstServerBuilder(services);
         }
 
-        private static void AddMisc(IServiceCollection services)
+        private static void AddServices(IServiceCollection services)
         {
-            services
-                .AddSingleton<WstMarkerService>()
-                .AddSingleton<IFilterExplorer, FilterExplorer>()
-                .AddSingleton<IDisabledFilterTypeExplorer, DisabledFilterTypeExplorer>()
-                .AddSingleton<IFilterSifter, FilterSifter>()
-                .AddSingleton<IFilterExecutor, FilterExecutor>()
-                .AddSingleton<IFilterPipelineFactory, FilterPipelineFactory>()
-                .AddSingleton<IHandlerExplorer, HandlerExplorer>()
-                .AddSingleton<IHandlerExecutor, HandlerExecutor>()
-                .AddSingleton<IHandlerNameResolver, HandlerNameResolver>()
-                .AddSingleton<IHandlerDescriptorFactory, HandlerDescriptorFactory>();
+            services.AddSingleton<WstMarkerService>();
+            services.AddSingleton<IBusFactory, BusFactory>();
+            services.AddSingleton<IClientManagerFactory, ClientManagerFactory>();
+            services.AddSingleton<IGroupManagerFactory, GroupManagerFactory>();
+            services.AddSingleton<IHubCacheFactory, HubCacheFactory>();
+            services.AddSingleton<IClientCacheFactory, ClientCacheFactory>();
+
+            services.AddScoped<IFilterScreener, FilterScreener>();
+            services.AddScoped<IFilterExplorer, FilterExplorer>();
+            services.AddScoped<IFilterExecutor, FilterExecutor>();
+            services.AddScoped<IHubMapper, HubMapper>();
+            services.AddScoped<IHubFilterStore, HubFilterStore>();
+            services.AddScoped<IRequestProcessor, RequestProcessor>();
+            services.AddScoped<IProtocolStore, ProtocolStore>();
+            services.AddScoped<IMessageTransmitterFactory, MessageTransmitterFactory>();
+            services.AddScoped<IClientDisconnectorFactory, ClientDisconnectorFactory>();
+            services.AddScoped<IClientFactory, ClientFactory>();
+            services.AddScoped<IMessageDeserializerFactory, MessageDeserializerFactory>();
+            services.AddScoped<IMessageTypeResolver, MessageTypeResolver>();
+            services.AddScoped<IMessageReceiverFactory, MessageReceiverFactory>();
+            services.AddScoped<IArgumentConverterFactory, ArgumentConverterFactory>();
+            services.AddScoped<IMessageDispatcherFactory, MessageDispatcherFactory>();
+            services.AddScoped<IInvocationProcessorFactory, InvocationProcessorFactory>();
+            services.AddScoped<IHandlerStore, HandlerStore>();
+            services.AddScoped<IHandlerFilterStore, HandlerFilterStore>();
+            services.AddScoped<IConnectionProcessorFactory, ConnectionProcessorFactory>();
+            services.AddScoped<IWstHubEndpointConventionBuilderFactory, WstHubEndpointConventionBuilderFactory>();
+            services.AddScoped<IWorkerMapper, WorkerMapper>();
+            services.AddScoped<IHandlerMapper, HandlerMapper>();
+        }
+
+        private static void AddHubs(IServiceCollection services)
+        {
+            Assembly assembly = Assembly.GetEntryAssembly()!;
+
+            foreach (Type type in assembly.DefinedTypes)
+            {
+                if (typeof(Hub).IsAssignableFrom(type))
+                {
+                    Type hubInterfaceType = type.GetInterfaces().First();
+
+                    Type hubOptionsType = typeof(HubOptions<>)
+                        .MakeGenericType(hubInterfaceType.GetGenericArguments().First());
+
+                    services.AddSingleton(hubInterfaceType, type);
+                    services.AddSingleton(hubOptionsType);
+                }
+            }
         }
 
         private static void AddWorkers(IServiceCollection services)
         {
             Assembly assembly = Assembly.GetEntryAssembly()!;
 
-            foreach (Type type in assembly.ExportedTypes)
+            foreach (Type type in assembly.DefinedTypes)
             {
                 if (typeof(Worker).IsAssignableFrom(type))
                 {

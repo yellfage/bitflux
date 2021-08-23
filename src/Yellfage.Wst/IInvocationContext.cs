@@ -1,137 +1,209 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using Yellfage.Wst.Filters;
-
 namespace Yellfage.Wst
 {
-    public interface IInvocationContext<T> : IFilterContext<T>
+    public interface IInvocationContext<TMarker>
     {
-        IClient<T> Caller { get; }
-        string Id { get; }
+        IHub<TMarker> Hub { get; }
+        IClient<TMarker> Client { get; }
+        IServiceProvider ServiceProvider { get; }
         string HandlerName { get; }
-        IList<object?> Args { get; }
+        IList<object?> Arguments { get; }
 
-        Task ReplyAsync(object? data, CancellationToken cancellationToken = default);
-
+        Task ReplyAsync(object? value, CancellationToken cancellationToken = default);
         Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
 
-        Task NotifyOthersAsync(string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1>(string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2>(string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersAsync(string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync(string handlerName, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { }, cancellationToken);
+        }
 
-        Task NotifyOthersExceptAsync(IClient<T> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1>(IClient<T> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync(IClient<T> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1>(string handlerName, TArgument1 argument1, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1 }, cancellationToken);
+        }
 
-        Task NotifyOthersExceptAsync(IEnumerable<IClient<T>> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersExceptAsync(IEnumerable<IClient<T>> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2>(string handlerName, TArgument1 argument1, TArgument2 argument2, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupAsync(string groupName, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1>(string groupName, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(string groupName, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync(string groupName, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupAsync(IGroup<T> group, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1>(IGroup<T> group, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(IGroup<T> group, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupAsync(IGroup<T> group, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupExceptAsync(string groupName, IClient<T> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(string groupName, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync(string groupName, IClient<T> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupExceptAsync(IGroup<T> group, IClient<T> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(IGroup<T> group, IClient<T> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync(IGroup<T> group, IClient<T> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupExceptAsync(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync(string groupName, IEnumerable<IClient<T>> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7 }, cancellationToken);
+        }
 
-        Task NotifyOthersInGroupExceptAsync(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10, CancellationToken cancellationToken = default);
-        Task NotifyOthersInGroupExceptAsync(IGroup<T> group, IEnumerable<IClient<T>> excluded, string handlerName, object?[] args, CancellationToken cancellationToken = default);
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8 }, cancellationToken);
+        }
+
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9 }, cancellationToken);
+        }
+
+        async Task NotifyOthersAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersAsync(handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10 }, cancellationToken);
+        }
+
+        async Task NotifyOthersAsync(string handlerName, object?[] arguments, CancellationToken cancellationToken = default)
+        {
+            await Hub.Clients.NotifyAllExceptAsync(Client, handlerName, arguments, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync(string groupName, string handlerName, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, Array.Empty<object>(), cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1>(string groupName, string handlerName, TArgument1 argument1, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string groupName, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInGroupAsync(groupName, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInGroupAsync(string groupName, string handlerName, object?[] arguments, CancellationToken cancellationToken = default)
+        {
+            if (groupName is null)
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+
+            await NotifyOthersInManyGroupsAsync(new[] { groupName }, handlerName, arguments, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync(IEnumerable<string> groupNames, string handlerName, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(IEnumerable<string> groupNames, string handlerName, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10, CancellationToken cancellationToken = default)
+        {
+            await NotifyOthersInManyGroupsAsync(groupNames, handlerName, new object?[] { argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10 }, cancellationToken);
+        }
+
+        async Task NotifyOthersInManyGroupsAsync(IEnumerable<string> groupNames, string handlerName, object?[] arguments, CancellationToken cancellationToken = default)
+        {
+            if (groupNames is null)
+            {
+                throw new ArgumentNullException(nameof(groupNames));
+            }
+
+            await Hub.Groups.NotifyManyExceptAsync(groupNames, Client, handlerName, arguments, cancellationToken);
+        }
     }
 }

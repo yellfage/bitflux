@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yellfage.Wst", "Yellfage.Wst\Yellfage.Wst.csproj", "{0DA6949E-FFA9-4F10-B4F5-DAF6837FD31B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yellfage.Wst.Samples.Echo", "Yellfage.Wst.Samples.Echo\Yellfage.Wst.Samples.Echo.csproj", "{40A28660-D31E-456C-98D1-6E1522FC2332}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yellfage.Wst.Sample.Echo", "..\samples\Yellfage.Wst.Sample.Echo\Yellfage.Wst.Sample.Echo.csproj", "{45738196-CE7D-4AFE-A71A-CF78E355EB62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{0DA6949E-FFA9-4F10-B4F5-DAF6837FD31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA6949E-FFA9-4F10-B4F5-DAF6837FD31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DA6949E-FFA9-4F10-B4F5-DAF6837FD31B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40A28660-D31E-456C-98D1-6E1522FC2332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40A28660-D31E-456C-98D1-6E1522FC2332}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40A28660-D31E-456C-98D1-6E1522FC2332}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40A28660-D31E-456C-98D1-6E1522FC2332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
