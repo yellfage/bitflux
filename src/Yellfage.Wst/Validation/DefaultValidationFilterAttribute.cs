@@ -39,7 +39,7 @@ namespace Yellfage.Wst.Validation
 
                 if (!Validator.TryValidateObject(argument, validationContext, validationResults, ValidateAllProperties))
                 {
-                    await OnValidationFailedAsync(context, validationContext, validationResults);
+                    await OnFailureAsync(context, validationContext, validationResults);
 
                     return;
                 }
@@ -48,7 +48,7 @@ namespace Yellfage.Wst.Validation
             await next();
         }
 
-        public virtual Task OnValidationFailedAsync<TMarker>(
+        public virtual Task OnFailureAsync<TMarker>(
             IInvocationContext<TMarker> context,
             ValidationContext validationContext,
             ICollection<ValidationResult> validationResults)

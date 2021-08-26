@@ -44,7 +44,7 @@ namespace Yellfage.Wst.Authorization
 
             if (!authorizationResult.Succeeded)
             {
-                await OnAuthorizationFailedAsync(context, authorizationResult);
+                await OnFailureAsync(context, authorizationResult);
 
                 return;
             }
@@ -52,7 +52,7 @@ namespace Yellfage.Wst.Authorization
             await next();
         }
 
-        public virtual Task OnAuthorizationFailedAsync<TMarker>(
+        public virtual Task OnFailureAsync<TMarker>(
             IInvocationContext<TMarker> context,
             AuthorizationResult authorizationResult)
         {
