@@ -1,10 +1,10 @@
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
-using Yellfage.Wst.Interior.Handling;
-using Yellfage.Wst.Interior.Filtration;
 using Yellfage.Wst.Interior.Communication;
+using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Interior.Handling;
 
 namespace Yellfage.Wst.Interior.Invocation
 {

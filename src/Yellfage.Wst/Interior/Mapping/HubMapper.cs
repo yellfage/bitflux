@@ -1,16 +1,17 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-using Yellfage.Wst.Filtration;
-using Yellfage.Wst.Configuration;
 using Yellfage.Wst.Communication;
-using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Configuration;
+using Yellfage.Wst.Filtration;
 using Yellfage.Wst.Interior.Communication;
+using Yellfage.Wst.Interior.Filtration;
 
 namespace Yellfage.Wst.Interior.Mapping
 {

@@ -1,6 +1,6 @@
 using System;
-using System.Security.Claims;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Yellfage.Wst.Sample.Echo
 {

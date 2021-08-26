@@ -1,21 +1,22 @@
 using System;
 using System.Linq;
 using System.Reflection;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Yellfage.Wst.Bussing;
 using Yellfage.Wst.Caching;
-using Yellfage.Wst.Interior;
 using Yellfage.Wst.Communication;
-using Yellfage.Wst.Interior.Mapping;
+using Yellfage.Wst.Interior;
 using Yellfage.Wst.Interior.Bussing;
 using Yellfage.Wst.Interior.Caching;
-using Yellfage.Wst.Interior.Handling;
-using Yellfage.Wst.Interior.Connection;
-using Yellfage.Wst.Interior.Invocation;
-using Yellfage.Wst.Interior.Filtration;
 using Yellfage.Wst.Interior.Communication;
+using Yellfage.Wst.Interior.Connection;
 using Yellfage.Wst.Interior.Disconnection;
+using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Interior.Handling;
+using Yellfage.Wst.Interior.Invocation;
+using Yellfage.Wst.Interior.Mapping;
 
 namespace Yellfage.Wst
 {
