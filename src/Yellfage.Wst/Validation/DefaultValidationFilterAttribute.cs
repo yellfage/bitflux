@@ -4,22 +4,18 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using Yellfage.Wst.Filtration;
-
 namespace Yellfage.Wst.Validation
 {
-    public class DefaultValidationFilterAttribute : AbstractValidationFilterAttribute, IFilter
+    public class DefaultValidationFilterAttribute : AbstractValidationFilterAttribute
     {
         public bool ValidateAllProperties { get; set; }
-
-        public virtual int Priority => FilterPriority.Validation;
 
         public DefaultValidationFilterAttribute()
         {
             ValidateAllProperties = true;
         }
 
-        public virtual async Task ApplyAsync<TMarker>(
+        public override async Task ApplyAsync<TMarker>(
             IInvocationContext<TMarker> context,
             Func<Task> next)
         {

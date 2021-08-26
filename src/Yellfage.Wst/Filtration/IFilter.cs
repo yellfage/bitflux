@@ -5,7 +5,7 @@ namespace Yellfage.Wst.Filtration
 {
     public interface IFilter
     {
-        int Priority => FilterPriority.Default;
+        int Priority { get; set; }
 
         Task ApplyAsync<TMarker>(IInvocationContext<TMarker> context, Func<Task> next);
     }
