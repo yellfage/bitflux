@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Yellfage.Wst.Interior.Handling
@@ -29,27 +30,38 @@ namespace Yellfage.Wst.Interior.Handling
 
         private async Task<object?> ExecuteMethodAsync(object? obj, object?[] arguments)
         {
-            dynamic? methodResult = Method.Invoke(obj, arguments);
-
-            if (Method.IsAwaitable())
+            try
             {
-                await methodResult;
+                dynamic? methodResult = Method.Invoke(obj, arguments);
 
-                string taskResultReturnTypeName = ( (object)methodResult! )
-                    .GetType()
-                    .GetProperty("Result")!
-                    .PropertyType
-                    .FullName!;
-
-                if (taskResultReturnTypeName != "System.Threading.Tasks.VoidTaskResult")
+                if (Method.IsAwaitable())
                 {
-                    return methodResult!.GetAwaiter().GetResult();
+                    await methodResult;
+
+                    string taskResultReturnTypeName = ( (object)methodResult! )
+                        .GetType()
+                        .GetProperty("Result")!
+                        .PropertyType
+                        .FullName!;
+
+                    if (taskResultReturnTypeName != "System.Threading.Tasks.VoidTaskResult")
+                    {
+                        return methodResult!.GetAwaiter().GetResult();
+                    }
+
+                    return null;
                 }
 
-                return null;
+                return methodResult;
             }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
 
-            return methodResult;
+                // Never reached
+
+                throw;
+            }
         }
     }
 }
