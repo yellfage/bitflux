@@ -23,6 +23,7 @@ module.exports = {
         "revert",
         "style",
         "test",
+        "chore",
       ],
     ],
   },
