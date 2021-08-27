@@ -34,6 +34,8 @@ namespace Yellfage.Wst
         private static void AddServices(IServiceCollection services)
         {
             services.AddSingleton<WstMarkerService>();
+            services.AddSingleton<IHubCacheConverter, CacheConverter>();
+            services.AddSingleton<IClientCacheConverter, CacheConverter>();
             services.AddSingleton<IBusFactory, BusFactory>();
             services.AddSingleton<IClientManagerFactory, ClientManagerFactory>();
             services.AddSingleton<IGroupManagerFactory, GroupManagerFactory>();

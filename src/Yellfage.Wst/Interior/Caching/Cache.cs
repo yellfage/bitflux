@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 using Yellfage.Wst.Caching;
@@ -9,61 +8,42 @@ namespace Yellfage.Wst.Interior.Caching
 {
     internal abstract class Cache : ICache
     {
-        protected IDictionary<string, byte[]> Dictionary { get; }
+        protected IDictionary<object, object> Dictionary { get; }
 
-        public Cache()
+        private ICacheConverter CacheConverter { get; }
+
+        public Cache(ICacheConverter cacheConverter)
         {
-            Dictionary = new ConcurrentDictionary<string, byte[]>();
+            Dictionary = new ConcurrentDictionary<object, object>();
+            CacheConverter = cacheConverter;
         }
 
-        public async Task<byte[]> GetAsync(string key)
+        public async Task<TValue> GetAsync<TValue>(object key)
         {
-            return Dictionary[key];
+            return CacheConverter.Deserialize<TValue>(Dictionary[key])!;
         }
 
-        public async Task<string> GetStringAsync(string key)
+        public async Task<TValue?> FindAsync<TValue>(object key)
         {
-            return Encoding.UTF8.GetString(await GetAsync(key));
-        }
-
-        public async Task<byte[]?> FindAsync(string key)
-        {
-            if (Dictionary.TryGetValue(key, out byte[]? value))
+            if (Dictionary.TryGetValue(key, out object? value))
             {
-                return value;
+                return CacheConverter.Deserialize<TValue>(value);
             }
 
             return default;
         }
 
-        public async Task<string?> FindStringAsync(string key)
+        public async Task SetAsync(object key, object value)
         {
-            byte[]? value = await FindAsync(key);
-
-            if (value is null)
-            {
-                return null;
-            }
-
-            return Encoding.UTF8.GetString(value);
+            Dictionary[key] = CacheConverter.Serialize(value);
         }
 
-        public async Task SetAsync(string key, byte[] value)
-        {
-            Dictionary[key] = value;
-        }
-
-        public async Task SetStringAsync(string key, string value)
-        {
-            await SetAsync(key, Encoding.UTF8.GetBytes(value));
-        }
-
-        public async Task RemoveAsync(string key)
+        public async Task RemoveAsync(object key)
         {
             Dictionary.Remove(key);
         }
 
-        public async Task<bool> ContainsAsync(string key)
+        public async Task<bool> ContainsAsync(object key)
         {
             return Dictionary.ContainsKey(key);
         }
