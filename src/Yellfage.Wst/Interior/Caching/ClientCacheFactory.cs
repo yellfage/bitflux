@@ -13,7 +13,7 @@ namespace Yellfage.Wst.Interior.Caching
 
         public IClientCache<TMarker> Create<TMarker>(IClientClaimsPrincipal user)
         {
-            return new ClientCache<TMarker>(ClientCacheConverter);
+            return new Cache<TMarker>(ClientCacheConverter);
         }
     }
 }

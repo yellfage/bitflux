@@ -6,16 +6,16 @@ using Yellfage.Wst.Caching;
 
 namespace Yellfage.Wst.Interior.Caching
 {
-    internal abstract class Cache : ICache
+    internal class Cache<TMarker> : IHubCache<TMarker>, IClientCache<TMarker>
     {
-        protected IDictionary<object, object> Dictionary { get; }
-
         private ICacheConverter CacheConverter { get; }
+
+        private IDictionary<object, object> Dictionary { get; }
 
         public Cache(ICacheConverter cacheConverter)
         {
-            Dictionary = new ConcurrentDictionary<object, object>();
             CacheConverter = cacheConverter;
+            Dictionary = new ConcurrentDictionary<object, object>();
         }
 
         public async Task<TValue> GetAsync<TValue>(object key)

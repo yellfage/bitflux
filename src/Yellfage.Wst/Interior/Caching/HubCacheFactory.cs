@@ -13,7 +13,7 @@ namespace Yellfage.Wst.Interior.Caching
 
         public IHubCache<TMarker> Create<TMarker>()
         {
-            return new HubCache<TMarker>(HubCacheConverter);
+            return new Cache<TMarker>(HubCacheConverter);
         }
     }
 }
