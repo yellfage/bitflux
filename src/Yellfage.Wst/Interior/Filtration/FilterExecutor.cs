@@ -11,7 +11,7 @@ namespace Yellfage.Wst.Interior.Filtration
     {
         public async Task ExecuteAsync<TMarker>(
             IEnumerable<IFilter> filters,
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             Func<Task> endpoint)
         {
             await filters

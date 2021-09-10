@@ -9,7 +9,7 @@ namespace Yellfage.Wst.Sample.Echo
     public class ValidationFilterAttribute : DefaultValidationFilterAttribute
     {
         public override Task OnFailureAsync<TMarker>(
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             ValidationContext validationContext,
             ICollection<ValidationResult> validationResults)
         {

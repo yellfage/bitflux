@@ -8,6 +8,6 @@ namespace Yellfage.Wst.Interior.Filtration
 {
     internal interface IFilterExecutor
     {
-        Task ExecuteAsync<TMarker>(IEnumerable<IFilter> filters, IInvocationContext<TMarker> context, Func<Task> endpoint);
+        Task ExecuteAsync<TMarker>(IEnumerable<IFilter> filters, IInvocationExecutionContext<TMarker> context, Func<Task> endpoint);
     }
 }

@@ -7,13 +7,13 @@ using Yellfage.Wst.Interior.Communication;
 
 namespace Yellfage.Wst.Interior.Invocation
 {
-    internal class RegularInvocationContext<TMarker> : InvocationContext<TMarker>
+    internal class RegularInvocationExecutionContext<TMarker> : InvocationExecutionContext<TMarker>
     {
         private string Id { get; }
         private bool Completed { get; set; }
         private IMessageTransmitter MessageTransmitter { get; }
 
-        public RegularInvocationContext(
+        public RegularInvocationExecutionContext(
             IHub<TMarker> hub,
             IServiceProvider serviceProvider,
             IClient<TMarker> caller,
@@ -34,12 +34,12 @@ namespace Yellfage.Wst.Interior.Invocation
         }
 
         public override async Task ReplyAsync(
-            object? value,
+            object? result,
             CancellationToken cancellationToken = default)
         {
             var message = new OutgoingSuccessfulRegularInvocationResultMessage(
                 Id,
-                value);
+                result);
 
             await SendResultMessageAsync(message, cancellationToken);
         }

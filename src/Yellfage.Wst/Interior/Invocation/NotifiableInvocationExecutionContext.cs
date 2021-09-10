@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Yellfage.Wst.Interior.Invocation
 {
-    internal class NotifiableInvocationContext<TMarker> : InvocationContext<TMarker>
+    internal class NotifiableInvocationExecutionContext<TMarker> : InvocationExecutionContext<TMarker>
     {
-        public NotifiableInvocationContext(
+        public NotifiableInvocationExecutionContext(
             IHub<TMarker> hub,
             IServiceProvider serviceProvider,
             IClient<TMarker> caller,
@@ -16,7 +16,7 @@ namespace Yellfage.Wst.Interior.Invocation
         {
         }
 
-        public override Task ReplyAsync(object? value, CancellationToken cancellationToken = default)
+        public override Task ReplyAsync(object? result, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

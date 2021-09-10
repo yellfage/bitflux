@@ -7,6 +7,6 @@ namespace Yellfage.Wst.Filtration
     {
         public int Priority { get; set; } = 0;
 
-        public abstract Task ApplyAsync<TMarker>(IInvocationContext<TMarker> context, Func<Task> next);
+        public abstract Task ApplyAsync<TMarker>(IInvocationExecutionContext<TMarker> context, Func<Task> next);
     }
 }

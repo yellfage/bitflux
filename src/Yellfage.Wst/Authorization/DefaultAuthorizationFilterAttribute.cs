@@ -22,7 +22,7 @@ namespace Yellfage.Wst.Authorization
         }
 
         public override async Task ApplyAsync<TMarker>(
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             Func<Task> next)
         {
             IAuthorizationPolicyProvider authorizationPolicyProvider = context
@@ -50,7 +50,7 @@ namespace Yellfage.Wst.Authorization
         }
 
         public virtual Task OnFailureAsync<TMarker>(
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             AuthorizationResult authorizationResult)
         {
             return context.ReplyErrorAsync(

@@ -7,7 +7,7 @@ namespace Yellfage.Wst.Sample.Echo
 {
     public class HubFilterAttribute : FilterAttribute
     {
-        public override async Task ApplyAsync<T>(IInvocationContext<T> context, Func<Task> next)
+        public override async Task ApplyAsync<T>(IInvocationExecutionContext<T> context, Func<Task> next)
         {
             Console.WriteLine("Hub filter");
 

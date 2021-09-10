@@ -27,7 +27,7 @@ namespace Yellfage.Wst.Interior.Invocation
             ArgumentConverter = argumentConverter;
         }
 
-        public async Task ProcessAsync<TMarker>(IInvocationContext<TMarker> context)
+        public async Task ProcessAsync<TMarker>(IInvocationExecutionContext<TMarker> context)
         {
             if (HandlerStore.TryGet(context.HandlerName, out Handler? handler))
             {

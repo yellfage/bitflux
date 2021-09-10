@@ -16,7 +16,7 @@ namespace Yellfage.Wst.Validation
         }
 
         public override async Task ApplyAsync<TMarker>(
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             Func<Task> next)
         {
             foreach (object? argument in context.Arguments)
@@ -45,7 +45,7 @@ namespace Yellfage.Wst.Validation
         }
 
         public virtual Task OnFailureAsync<TMarker>(
-            IInvocationContext<TMarker> context,
+            IInvocationExecutionContext<TMarker> context,
             ValidationContext validationContext,
             ICollection<ValidationResult> validationResults)
         {

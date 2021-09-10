@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Yellfage.Wst.Interior.Invocation
 {
-    internal abstract class InvocationContext<TMarker> : IInvocationContext<TMarker>
+    internal abstract class InvocationExecutionContext<TMarker> : IInvocationExecutionContext<TMarker>
     {
         public IHub<TMarker> Hub { get; }
         public IClient<TMarker> Client { get; }
@@ -13,7 +13,7 @@ namespace Yellfage.Wst.Interior.Invocation
         public string HandlerName { get; }
         public IList<object?> Arguments { get; }
 
-        public InvocationContext(
+        public InvocationExecutionContext(
             IHub<TMarker> hub,
             IServiceProvider serviceProvider,
             IClient<TMarker> client,
@@ -21,14 +21,13 @@ namespace Yellfage.Wst.Interior.Invocation
             IList<object?> arguments)
         {
             Hub = hub;
-            ServiceProvider = serviceProvider;
             Client = client;
+            ServiceProvider = serviceProvider;
             HandlerName = handlerName;
             Arguments = arguments;
         }
 
-        public abstract Task ReplyAsync(object? value, CancellationToken cancellationToken = default);
-
+        public abstract Task ReplyAsync(object? result, CancellationToken cancellationToken = default);
         public abstract Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
     }
 }

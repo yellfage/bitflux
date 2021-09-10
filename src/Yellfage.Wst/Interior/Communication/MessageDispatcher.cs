@@ -42,11 +42,13 @@ namespace Yellfage.Wst.Interior.Communication
         {
             using IServiceScope scope = GlobalServiceProvider.CreateScope();
 
-            InvocationContext<TMarker> context = incomingMessage switch
+            InvocationExecutionContext<TMarker> context = incomingMessage switch
             {
-                IncomingRegularInvocationMessage message => CreateRegularInvocationContext(scope, message),
+                IncomingRegularInvocationMessage message =>
+                    CreateRegularInvocationExecutionContext(scope, message),
 
-                IncomingNotifiableInvocationMessage message => CreateNotifiableInvocationContext(scope, message),
+                IncomingNotifiableInvocationMessage message =>
+                    CreateNotifiableInvocationExecutionContext(scope, message),
 
                 _ => throw new InvalidOperationException("Unknown message type")
             };
@@ -54,7 +56,7 @@ namespace Yellfage.Wst.Interior.Communication
             await InvocationProcessor.ProcessAsync(context);
         }
 
-        private RegularInvocationContext<TMarker> CreateRegularInvocationContext(
+        private RegularInvocationExecutionContext<TMarker> CreateRegularInvocationExecutionContext(
             IServiceScope scope,
             IncomingRegularInvocationMessage message)
         {
@@ -69,7 +71,7 @@ namespace Yellfage.Wst.Interior.Communication
                 MessageTransmitter);
         }
 
-        private NotifiableInvocationContext<TMarker> CreateNotifiableInvocationContext(
+        private NotifiableInvocationExecutionContext<TMarker> CreateNotifiableInvocationExecutionContext(
             IServiceScope scope,
             IncomingNotifiableInvocationMessage message)
         {

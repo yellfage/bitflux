@@ -13,9 +13,6 @@ namespace Yellfage.Wst
         string HandlerName { get; }
         IList<object?> Arguments { get; }
 
-        Task ReplyAsync(object? value, CancellationToken cancellationToken = default);
-        Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
-
         async Task NotifyOthersAsync(string handlerName, CancellationToken cancellationToken = default)
         {
             await NotifyOthersAsync(handlerName, new object?[] { }, cancellationToken);

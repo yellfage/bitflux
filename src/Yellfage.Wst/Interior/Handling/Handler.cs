@@ -18,7 +18,7 @@ namespace Yellfage.Wst.Interior.Handling
             Method = method;
         }
 
-        public async Task ExecuteAsync<TMarker>(IInvocationContext<TMarker> context)
+        public async Task ExecuteAsync<TMarker>(IInvocationExecutionContext<TMarker> context)
         {
             var worker = (Worker<TMarker>)context.ServiceProvider.GetRequiredService(Method.DeclaringType!);
 
