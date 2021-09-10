@@ -9,7 +9,7 @@ namespace Yellfage.Wst.ExceptionHandling
     {
         public AbstractExceptionFilterAttribute()
         {
-            Priority = AbstractFilterPriority.Exception;
+            Priority = (int)AbstractFilterPriority.Exception;
         }
     }
 }

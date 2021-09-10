@@ -9,7 +9,7 @@ namespace Yellfage.Wst.Validation
     {
         public AbstractValidationFilterAttribute()
         {
-            Priority = AbstractFilterPriority.Validation;
+            Priority = (int)AbstractFilterPriority.Validation;
         }
     }
 }

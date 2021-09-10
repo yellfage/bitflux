@@ -9,7 +9,7 @@ namespace Yellfage.Wst.Authorization
     {
         public AbstractAuthorizationFilterAttribute()
         {
-            Priority = AbstractFilterPriority.Authorization;
+            Priority = (int)AbstractFilterPriority.Authorization;
         }
     }
 }
