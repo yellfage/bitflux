@@ -1,8 +1,6 @@
 using System;
 
-using Yellfage.Wst.Filtration;
-
-namespace Yellfage.Wst.ExceptionHandling
+namespace Yellfage.Wst.Filtration
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class DisableExceptionFilterAttribute : DisableFilterAttribute

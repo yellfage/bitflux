@@ -1,8 +1,6 @@
 using System;
 
-using Yellfage.Wst.Filtration;
-
-namespace Yellfage.Wst.Authorization
+namespace Yellfage.Wst.Filtration
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class DisableAuthorizationFilterAttribute : DisableFilterAttribute

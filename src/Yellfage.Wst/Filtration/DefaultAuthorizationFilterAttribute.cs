@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Yellfage.Wst.Authorization
+namespace Yellfage.Wst.Filtration
 {
     public class DefaultAuthorizationFilterAttribute : AbstractAuthorizationFilterAttribute, IAuthorizeData
     {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Yellfage.Wst.Validation
+namespace Yellfage.Wst.Filtration
 {
     public class DefaultValidationFilterAttribute : AbstractValidationFilterAttribute
     {

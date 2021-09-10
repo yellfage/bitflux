@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-using Yellfage.Wst.Validation;
+using Yellfage.Wst.Filtration;
 
 namespace Yellfage.Wst.Sample.Echo
 {

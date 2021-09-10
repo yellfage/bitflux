@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
 
-using Yellfage.Wst.Authorization;
+using Yellfage.Wst.Filtration;
 
 namespace Yellfage.Wst.Sample.Echo
 {
