@@ -41,6 +41,11 @@ namespace Yellfage.Wst.Interior.Invocation
             object? result,
             CancellationToken cancellationToken = default)
         {
+            if (Completed)
+            {
+                return;
+            }
+
             Result = result;
 
             var message = new OutgoingSuccessfulRegularInvocationResultMessage(
