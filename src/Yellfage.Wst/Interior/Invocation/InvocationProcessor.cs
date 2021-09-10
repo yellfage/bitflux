@@ -44,6 +44,8 @@ namespace Yellfage.Wst.Interior.Invocation
                     HandlerFilterStore.GetAll(handler),
                     context,
                     () => handler.ExecuteAsync(context));
+
+                await context.ReplyAsync();
             }
             else
             {

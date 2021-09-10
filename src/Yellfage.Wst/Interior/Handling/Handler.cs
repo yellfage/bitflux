@@ -24,9 +24,7 @@ namespace Yellfage.Wst.Interior.Handling
 
             worker.Context = context;
 
-            object? result = await ExecuteMethodAsync(worker, context.Arguments.ToArray());
-
-            await context.ReplyAsync(result);
+            context.Result = await ExecuteMethodAsync(worker, context.Arguments.ToArray());
         }
 
         private async Task<object?> ExecuteMethodAsync(object? obj, object?[] arguments)

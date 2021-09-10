@@ -33,10 +33,17 @@ namespace Yellfage.Wst.Interior.Invocation
             MessageTransmitter = messageTransmitter;
         }
 
+        public override async Task ReplyAsync(CancellationToken cancellationToken = default)
+        {
+            await ReplyAsync(Result, cancellationToken);
+        }
+
         public override async Task ReplyAsync(
             object? result,
             CancellationToken cancellationToken = default)
         {
+            Result = result;
+
             var message = new OutgoingSuccessfulRegularInvocationResultMessage(
                 Id,
                 result);

@@ -12,6 +12,7 @@ namespace Yellfage.Wst.Interior.Invocation
         public IServiceProvider ServiceProvider { get; }
         public string HandlerName { get; }
         public IList<object?> Arguments { get; }
+        public object? Result { get; set; }
 
         public InvocationExecutionContext(
             IHub<TMarker> hub,
@@ -27,6 +28,7 @@ namespace Yellfage.Wst.Interior.Invocation
             Arguments = arguments;
         }
 
+        public abstract Task ReplyAsync(CancellationToken cancellationToken = default);
         public abstract Task ReplyAsync(object? result, CancellationToken cancellationToken = default);
         public abstract Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
     }
