@@ -20,7 +20,6 @@ namespace Yellfage.Wst.Interior.Invocation
             string handlerName,
             IList<object?> arguments,
             string id,
-            bool completed,
             IMessageTransmitter messageTransmitter) : base(
                 hub,
                 serviceProvider,
@@ -29,7 +28,7 @@ namespace Yellfage.Wst.Interior.Invocation
                 arguments)
         {
             Id = id;
-            Completed = completed;
+            Completed = false;
             MessageTransmitter = messageTransmitter;
         }
 

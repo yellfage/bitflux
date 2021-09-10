@@ -67,7 +67,6 @@ namespace Yellfage.Wst.Interior.Communication
                 message.HandlerName,
                 message.Arguments,
                 message.InvocationId,
-                false,
                 MessageTransmitter);
         }
 
