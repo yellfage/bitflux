@@ -21,7 +21,7 @@ namespace Yellfage.Wst.Interior.Invocation
             return Task.CompletedTask;
         }
 
-        public override Task ReplyAsync(object? result, CancellationToken cancellationToken = default)
+        public override Task ReplyAsync(Func<object?> createResult, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

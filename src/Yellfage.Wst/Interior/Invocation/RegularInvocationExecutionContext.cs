@@ -34,11 +34,11 @@ namespace Yellfage.Wst.Interior.Invocation
 
         public override async Task ReplyAsync(CancellationToken cancellationToken = default)
         {
-            await ReplyAsync(Result, cancellationToken);
+            await ReplyAsync(() => Result, cancellationToken);
         }
 
         public override async Task ReplyAsync(
-            object? result,
+            Func<object?> createResult,
             CancellationToken cancellationToken = default)
         {
             if (Completed)
@@ -46,11 +46,11 @@ namespace Yellfage.Wst.Interior.Invocation
                 return;
             }
 
-            Result = result;
+            Result = createResult();
 
             var message = new OutgoingSuccessfulRegularInvocationResultMessage(
                 Id,
-                result);
+                Result);
 
             await SendResultMessageAsync(message, cancellationToken);
         }

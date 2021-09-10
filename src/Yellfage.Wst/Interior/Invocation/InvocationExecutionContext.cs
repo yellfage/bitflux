@@ -29,7 +29,7 @@ namespace Yellfage.Wst.Interior.Invocation
         }
 
         public abstract Task ReplyAsync(CancellationToken cancellationToken = default);
-        public abstract Task ReplyAsync(object? result, CancellationToken cancellationToken = default);
+        public abstract Task ReplyAsync(Func<object?> createResult, CancellationToken cancellationToken = default);
         public abstract Task ReplyErrorAsync(string error, CancellationToken cancellationToken = default);
     }
 }
