@@ -39,7 +39,7 @@ namespace Yellfage.Wst.Interior.Communication
                         await WebSocket.CloseOutputAsync(
                             WebSocketCloseStatus.ProtocolError,
                             "The incoming message is invalid",
-                            CancellationToken.None);
+                            default);
 
                         return;
                     }
@@ -51,7 +51,7 @@ namespace Yellfage.Wst.Interior.Communication
                     await WebSocket.CloseOutputAsync(
                         WebSocketCloseStatus.ProtocolError,
                         "Unable to deserialize the received message",
-                        CancellationToken.None);
+                        default);
 
                     return;
                 }
@@ -67,7 +67,7 @@ namespace Yellfage.Wst.Interior.Communication
                 {
                     WebSocketReceiveResult receiveResult = await WebSocket.ReceiveAsync(
                         Array.Empty<byte>(),
-                        CancellationToken.None);
+                        default);
 
                     if (receiveResult.MessageType == WebSocketMessageType.Close)
                     {
@@ -86,9 +86,7 @@ namespace Yellfage.Wst.Interior.Communication
 
                     byte[] messageSegment = new byte[MessageSegmentSize];
 
-                    receiveResult = await WebSocket.ReceiveAsync(
-                        messageSegment,
-                        CancellationToken.None);
+                    receiveResult = await WebSocket.ReceiveAsync(messageSegment, default);
 
                     if (receiveResult.EndOfMessage)
                     {
@@ -106,7 +104,7 @@ namespace Yellfage.Wst.Interior.Communication
                             await WebSocket.CloseOutputAsync(
                                 WebSocketCloseStatus.MessageTooBig,
                                 "Message too big",
-                                CancellationToken.None);
+                                default);
 
                             return;
                         }
@@ -115,7 +113,7 @@ namespace Yellfage.Wst.Interior.Communication
 
                         messageSegment = new byte[MessageSegmentSize];
 
-                        receiveResult = await WebSocket.ReceiveAsync(messageSegment, CancellationToken.None);
+                        receiveResult = await WebSocket.ReceiveAsync(messageSegment, default);
                     }
                     while (!receiveResult.EndOfMessage);
 
