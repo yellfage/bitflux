@@ -71,6 +71,11 @@ namespace Yellfage.Wst.Interior.Communication
 
                     if (receiveResult.MessageType == WebSocketMessageType.Close)
                     {
+                        await WebSocket.CloseOutputAsync(
+                            WebSocket.CloseStatus ?? WebSocketCloseStatus.NormalClosure,
+                            WebSocket.CloseStatusDescription,
+                            default);
+
                         return;
                     }
 
