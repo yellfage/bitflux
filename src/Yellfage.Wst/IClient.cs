@@ -9,6 +9,7 @@ namespace Yellfage.Wst
     public interface IClient<TMarker>
     {
         string Id { get; }
+        string Ip { get; }
         IDictionary<object, object> Records { get; }
         IClientClaimsPrincipal User { get; }
         IClientCache<TMarker> Cache { get; }

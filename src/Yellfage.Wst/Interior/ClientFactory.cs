@@ -10,6 +10,7 @@ namespace Yellfage.Wst.Interior
     {
         public IClient<TMarker> Create<TMarker>(
             string id,
+            string ip,
             IDictionary<object, object> records,
             IClientClaimsPrincipal user,
             IClientCache<TMarker> cache,
@@ -18,6 +19,7 @@ namespace Yellfage.Wst.Interior
         {
             return new Client<TMarker>(
                 id,
+                ip,
                 records,
                 user,
                 cache,

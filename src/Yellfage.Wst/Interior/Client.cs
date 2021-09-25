@@ -12,6 +12,7 @@ namespace Yellfage.Wst.Interior
     internal class Client<TMarker> : IClient<TMarker>
     {
         public string Id { get; }
+        public string Ip { get; }
         public IDictionary<object, object> Records { get; }
         public IClientClaimsPrincipal User { get; }
         public IClientCache<TMarker> Cache { get; }
@@ -21,6 +22,7 @@ namespace Yellfage.Wst.Interior
 
         public Client(
             string id,
+            string ip,
             IDictionary<object, object> records,
             IClientClaimsPrincipal user,
             IClientCache<TMarker> cache,
@@ -28,6 +30,7 @@ namespace Yellfage.Wst.Interior
             IClientDisconnector clientDisconnector)
         {
             Id = id;
+            Ip = ip;
             Records = records;
             User = user;
             Cache = cache;

@@ -98,6 +98,7 @@ namespace Yellfage.Wst.Interior
             IClient<TMarker> client = ClientFactory
                 .Create(
                     context.Connection.Id,
+                    context.Connection.RemoteIpAddress?.ToString() ?? "",
                     new Dictionary<object, object>(),
                     user,
                     clientCache,

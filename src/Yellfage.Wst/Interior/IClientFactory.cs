@@ -8,6 +8,6 @@ namespace Yellfage.Wst.Interior
 {
     internal interface IClientFactory
     {
-        IClient<TMarker> Create<TMarker>(string id, IDictionary<object, object> records, IClientClaimsPrincipal user, IClientCache<TMarker> cache, IMessageTransmitter messageTransmitter, IClientDisconnector clientDisconnector);
+        IClient<TMarker> Create<TMarker>(string id, string ip, IDictionary<object, object> records, IClientClaimsPrincipal user, IClientCache<TMarker> cache, IMessageTransmitter messageTransmitter, IClientDisconnector clientDisconnector);
     }
 }
