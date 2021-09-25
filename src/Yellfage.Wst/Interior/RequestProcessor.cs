@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
@@ -97,6 +98,7 @@ namespace Yellfage.Wst.Interior
             IClient<TMarker> client = ClientFactory
                 .Create(
                     context.Connection.Id,
+                    new Dictionary<object, object>(),
                     user,
                     clientCache,
                     messageTransmitter,

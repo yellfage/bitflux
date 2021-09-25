@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace Yellfage.Wst.Interior
     internal class Client<TMarker> : IClient<TMarker>
     {
         public string Id { get; }
+        public IDictionary<object, object> Records { get; }
         public IClientClaimsPrincipal User { get; }
         public IClientCache<TMarker> Cache { get; }
 
@@ -19,12 +21,14 @@ namespace Yellfage.Wst.Interior
 
         public Client(
             string id,
+            IDictionary<object, object> records,
             IClientClaimsPrincipal user,
             IClientCache<TMarker> cache,
             IMessageTransmitter messageTransmitter,
             IClientDisconnector clientDisconnector)
         {
             Id = id;
+            Records = records;
             User = user;
             Cache = cache;
             MessageTransmitter = messageTransmitter;

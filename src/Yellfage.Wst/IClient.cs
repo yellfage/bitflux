@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace Yellfage.Wst
     public interface IClient<TMarker>
     {
         string Id { get; }
+        IDictionary<object, object> Records { get; }
         IClientClaimsPrincipal User { get; }
         IClientCache<TMarker> Cache { get; }
 
