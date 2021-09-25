@@ -99,6 +99,7 @@ namespace Yellfage.Wst.Interior
                 .Create(
                     context.Connection.Id,
                     context.Connection.RemoteIpAddress?.ToString() ?? "",
+                    context.Request.Headers["User-Agent"],
                     new Dictionary<object, object>(),
                     user,
                     clientCache,

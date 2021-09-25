@@ -13,6 +13,7 @@ namespace Yellfage.Wst.Interior
     {
         public string Id { get; }
         public string Ip { get; }
+        public string UserAgent { get; }
         public IDictionary<object, object> Records { get; }
         public IClientClaimsPrincipal User { get; }
         public IClientCache<TMarker> Cache { get; }
@@ -23,6 +24,7 @@ namespace Yellfage.Wst.Interior
         public Client(
             string id,
             string ip,
+            string userAgent,
             IDictionary<object, object> records,
             IClientClaimsPrincipal user,
             IClientCache<TMarker> cache,
@@ -31,6 +33,7 @@ namespace Yellfage.Wst.Interior
         {
             Id = id;
             Ip = ip;
+            UserAgent = userAgent;
             Records = records;
             User = user;
             Cache = cache;

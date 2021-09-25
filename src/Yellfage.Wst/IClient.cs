@@ -10,9 +10,10 @@ namespace Yellfage.Wst
     {
         string Id { get; }
         string Ip { get; }
-        IDictionary<object, object> Records { get; }
+        string UserAgent { get; }
         IClientClaimsPrincipal User { get; }
         IClientCache<TMarker> Cache { get; }
+        IDictionary<object, object> Records { get; }
 
         Task DisconnectAsync(CancellationToken cancellationToken = default);
         Task DisconnectAsync(string reason, CancellationToken cancellationToken = default);
