@@ -7,22 +7,13 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class ProtocolStore : IProtocolStore
+    internal class ProtocolProvider : IProtocolProvider
     {
-        private List<IProtocol> Protocols { get; }
+        private IEnumerable<IProtocol> Protocols { get; }
 
-        public ProtocolStore() : this(new List<IProtocol>())
-        {
-        }
-
-        public ProtocolStore(List<IProtocol> protocols)
+        public ProtocolProvider(IEnumerable<IProtocol> protocols)
         {
             Protocols = protocols;
-        }
-
-        public void AddRange(IEnumerable<IProtocol> protocols)
-        {
-            Protocols.AddRange(protocols);
         }
 
         public bool TryChoose(

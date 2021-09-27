@@ -10,19 +10,22 @@ namespace Yellfage.Wst.Interior.Mapping
 {
     internal class WorkerMapper : Mapper, IWorkerMapper
     {
+        private IHubFilterStore HubFilterStore { get; }
         private IHandlerMapper HandlerMapper { get; }
 
         public WorkerMapper(
             IFilterScreener filterScreener,
             IFilterExplorer filterExplorer,
+            IHubFilterStore hubFilterStore,
             IHandlerMapper handlerMapper) : base(filterScreener, filterExplorer)
         {
+            HubFilterStore = hubFilterStore;
             HandlerMapper = handlerMapper;
         }
 
-        public void Map(Type type, IEnumerable<IFilter> outerFilters)
+        public void Map(Type type)
         {
-            IEnumerable<IFilter> filters = ResolveFilters(type, outerFilters);
+            IEnumerable<IFilter> filters = ResolveFilters(type, HubFilterStore.GetAll());
 
             foreach (MethodInfo method in ResolveMethods(type))
             {

@@ -2,6 +2,9 @@ using System;
 using System.Net.WebSockets;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+using Yellfage.Wst.Configuration;
 
 namespace Yellfage.Wst.Interior.Communication
 {
@@ -18,12 +21,14 @@ namespace Yellfage.Wst.Interior.Communication
             WebSocket webSocket,
             IMessageDeserializer messageDeserializer)
         {
-            HubOptions<TMarker> options = ServiceProvider
-                .GetRequiredService<HubOptions<TMarker>>();
+            IOptions<HubOptions<TMarker>> options = ServiceProvider
+                .GetRequiredService<IOptions<HubOptions<TMarker>>>();
+
+            CommunicationSettings communicationSettings = options.Value.Communication;
 
             return new MessageReceiver(
-                options.Communication.MessageSegmentSize,
-                options.Communication.MessageSegmentSize * options.Communication.MaxMessageSegments,
+                communicationSettings.MessageSegmentSize,
+                communicationSettings.MessageSegmentSize * communicationSettings.MaxMessageSegments,
                 webSocket,
                 messageDeserializer);
         }

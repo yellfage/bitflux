@@ -3,10 +3,12 @@ using System.Linq;
 using System.Reflection;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Yellfage.Wst.Bussing;
 using Yellfage.Wst.Caching;
 using Yellfage.Wst.Communication;
+using Yellfage.Wst.Communication.Protocol.NewtonsoftJson;
 using Yellfage.Wst.Interior;
 using Yellfage.Wst.Interior.Bussing;
 using Yellfage.Wst.Interior.Caching;
@@ -28,12 +30,17 @@ namespace Yellfage.Wst
             AddHubs(services);
             AddWorkers(services);
 
-            return new WstServerBuilder(services);
+            var builder = new WstServerBuilder(services);
+
+            builder.AddNewtonsoftJsonProtocol();
+
+            return builder;
         }
 
         private static void AddServices(IServiceCollection services)
         {
             services.AddSingleton<WstMarkerService>();
+            services.AddSingleton<IProtocolProvider, ProtocolProvider>();
             services.AddSingleton<IHubCacheConverter, CacheConverter>();
             services.AddSingleton<IClientCacheConverter, CacheConverter>();
             services.AddSingleton<IBusFactory, BusFactory>();
@@ -48,7 +55,6 @@ namespace Yellfage.Wst
             services.AddScoped<IHubMapper, HubMapper>();
             services.AddScoped<IHubFilterStore, HubFilterStore>();
             services.AddScoped<IRequestProcessor, RequestProcessor>();
-            services.AddScoped<IProtocolStore, ProtocolStore>();
             services.AddScoped<IMessageTransmitterFactory, MessageTransmitterFactory>();
             services.AddScoped<IClientDisconnectorFactory, ClientDisconnectorFactory>();
             services.AddScoped<IClientFactory, ClientFactory>();
@@ -61,7 +67,6 @@ namespace Yellfage.Wst
             services.AddScoped<IHandlerStore, HandlerStore>();
             services.AddScoped<IHandlerFilterStore, HandlerFilterStore>();
             services.AddScoped<IConnectionProcessorFactory, ConnectionProcessorFactory>();
-            services.AddScoped<IWstHubEndpointConventionBuilderFactory, WstHubEndpointConventionBuilderFactory>();
             services.AddScoped<IWorkerMapper, WorkerMapper>();
             services.AddScoped<IHandlerMapper, HandlerMapper>();
         }
@@ -76,11 +81,17 @@ namespace Yellfage.Wst
                 {
                     Type hubInterfaceType = type.GetInterfaces().First();
 
-                    Type hubOptionsType = typeof(HubOptions<>)
-                        .MakeGenericType(hubInterfaceType.GetGenericArguments().First());
+                    Type markerType = hubInterfaceType.GetGenericArguments().First();
+
+                    Type hubPostConfigureOptionsInterfaceType = typeof(IPostConfigureOptions<>)
+                        .MakeGenericType(typeof(HubOptions<>).MakeGenericType(markerType));
+
+                    Type hubPostConfigureOptionsType = typeof(HubPostConfigureOptions<>)
+                        .MakeGenericType(markerType);
+
+                    services.AddSingleton(hubPostConfigureOptionsInterfaceType, hubPostConfigureOptionsType);
 
                     services.AddSingleton(hubInterfaceType, type);
-                    services.AddSingleton(hubOptionsType);
                 }
             }
         }

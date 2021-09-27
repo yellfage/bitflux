@@ -28,7 +28,8 @@ namespace Yellfage.Wst.Sample.Echo
 
                 endpoints
                     .MapWstHub<EchoHub>("/ws")
-                    .MapWorker<EchoWorker>();
+                    .AddWorker<EchoWorker>()
+                    .Build();
             });
         }
     }

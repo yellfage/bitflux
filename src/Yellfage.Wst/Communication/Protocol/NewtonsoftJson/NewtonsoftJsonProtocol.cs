@@ -1,11 +1,12 @@
 using System;
 using System.Text;
 
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
-namespace Yellfage.Wst.Communication
+namespace Yellfage.Wst.Communication.Protocol.NewtonsoftJson
 {
     public class NewtonsoftJsonProtocol : IProtocol
     {
@@ -14,19 +15,8 @@ namespace Yellfage.Wst.Communication
 
         private JsonSerializerSettings SerializerSettings { get; }
 
-        private static JsonSerializerSettings DefaultSerializerSettings => new()
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy
-                {
-                    ProcessDictionaryKeys = false,
-                    OverrideSpecifiedNames = true
-                }
-            }
-        };
-
-        public NewtonsoftJsonProtocol() : this(DefaultSerializerSettings)
+        public NewtonsoftJsonProtocol(
+            IOptions<NewtonsoftJsonProtocolOptions> options) : this(options.Value.SerializerSettings)
         {
         }
 

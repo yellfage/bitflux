@@ -15,7 +15,7 @@ namespace Yellfage.Wst.Interior
 {
     internal class RequestProcessor : IRequestProcessor
     {
-        private IProtocolStore ProtocolStore { get; }
+        private IProtocolProvider ProtocolProvider { get; }
         private IMessageTransmitterFactory MessageTransmitterFactory { get; }
         private IClientDisconnectorFactory ClientDisconnectorFactory { get; }
         private IClientCacheFactory ClientCacheFactory { get; }
@@ -28,7 +28,7 @@ namespace Yellfage.Wst.Interior
         private IConnectionProcessorFactory ConnectionProcessorFactory { get; }
 
         public RequestProcessor(
-            IProtocolStore protocolStore,
+            IProtocolProvider protocolProvider,
             IMessageTransmitterFactory messageTransmitterFactory,
             IClientDisconnectorFactory clientDisconnectorFactory,
             IClientCacheFactory clientCacheFactory,
@@ -40,7 +40,7 @@ namespace Yellfage.Wst.Interior
             IInvocationProcessorFactory invocationProcessorFactory,
             IConnectionProcessorFactory connectionProcessorFactory)
         {
-            ProtocolStore = protocolStore;
+            ProtocolProvider = protocolProvider;
             MessageTransmitterFactory = messageTransmitterFactory;
             ClientDisconnectorFactory = clientDisconnectorFactory;
             ClientCacheFactory = clientCacheFactory;
@@ -62,7 +62,7 @@ namespace Yellfage.Wst.Interior
                 return;
             }
 
-            if (ProtocolStore.TryChoose(
+            if (ProtocolProvider.TryChoose(
                 context.WebSockets.WebSocketRequestedProtocols,
                 out IProtocol? protocol))
             {

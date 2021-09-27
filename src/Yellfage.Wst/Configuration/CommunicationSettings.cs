@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using Yellfage.Wst.Communication;
-
 namespace Yellfage.Wst.Configuration
 {
     public class CommunicationSettings
@@ -11,14 +9,12 @@ namespace Yellfage.Wst.Configuration
         public TimeSpan KeepAliveInterval { get; set; }
         public int MessageSegmentSize { get; set; }
         public int MaxMessageSegments { get; set; }
-        public IList<IProtocol> Protocols { get; set; }
 
         public CommunicationSettings() : this(
-                new HashSet<string>(),
-                TimeSpan.FromSeconds(30),
-                4096,
-                8,
-                new List<IProtocol>())
+                allowedOrigins: new HashSet<string>(),
+                keepAliveInterval: TimeSpan.FromSeconds(30),
+                messageSegmentSize: 4096,
+                maxMessageSegments: 8)
         {
         }
 
@@ -26,14 +22,12 @@ namespace Yellfage.Wst.Configuration
             ISet<string> allowedOrigins,
             TimeSpan keepAliveInterval,
             int messageSegmentSize,
-            int maxMessageSegments,
-            IList<IProtocol> protocols)
+            int maxMessageSegments)
         {
             AllowedOrigins = allowedOrigins;
             KeepAliveInterval = keepAliveInterval;
             MessageSegmentSize = messageSegmentSize;
             MaxMessageSegments = maxMessageSegments;
-            Protocols = protocols;
         }
 
         internal void Validate()
@@ -42,7 +36,6 @@ namespace Yellfage.Wst.Configuration
             ValidateKeepAliveInterval();
             ValidateMessageSegmentSize();
             ValidateMaxMessageSegments();
-            ValidateProtocols();
         }
 
         private void ValidateAllowedOrigins()
@@ -79,15 +72,6 @@ namespace Yellfage.Wst.Configuration
             {
                 throw new InvalidOperationException(
                     $"The '{nameof(MaxMessageSegments)}' field cannot be less than 1");
-            }
-        }
-
-        private void ValidateProtocols()
-        {
-            if (Protocols is null)
-            {
-                throw new InvalidOperationException(
-                    $"The '{nameof(Protocols)}' field cannot be null");
             }
         }
     }

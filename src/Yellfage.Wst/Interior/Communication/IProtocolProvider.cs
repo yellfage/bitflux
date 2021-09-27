@@ -5,9 +5,8 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IProtocolStore
+    internal interface IProtocolProvider
     {
-        void AddRange(IEnumerable<IProtocol> protocols);
         bool TryChoose(IEnumerable<string> names, [MaybeNullWhen(false)] out IProtocol protocol);
     }
 }
