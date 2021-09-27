@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
@@ -100,7 +100,7 @@ namespace Yellfage.Wst.Interior
                     context.Connection.Id,
                     context.Connection.RemoteIpAddress?.ToString() ?? "",
                     context.Request.Headers["User-Agent"],
-                    new Dictionary<object, object>(),
+                    new ConcurrentDictionary<object, object>(),
                     user,
                     clientCache,
                     messageTransmitter,
