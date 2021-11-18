@@ -1,7 +1,7 @@
 namespace Yellfage.Wst.Interior.Mapping
 {
-    internal interface IHubMapper
+    internal interface IHubMapper<TMarker>
     {
-        void Map<TMarker>();
+        void Map();
     }
 }

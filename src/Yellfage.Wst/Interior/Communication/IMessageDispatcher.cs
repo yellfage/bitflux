@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageDispatcher
+    internal interface IMessageDispatcher<TMarker>
     {
-        Task StartAcceptingAsync();
+        Task StartAsync();
     }
 }

@@ -2,18 +2,11 @@ using Yellfage.Wst.Caching;
 
 namespace Yellfage.Wst.Interior.Caching
 {
-    internal class ClientCacheFactory : IClientCacheFactory
+    internal class ClientCacheFactory<TMarker> : IClientCacheFactory<TMarker>
     {
-        private IClientCacheConverter ClientCacheConverter { get; }
-
-        public ClientCacheFactory(IClientCacheConverter clientCacheConverter)
+        public IClientCache<TMarker> Create(IClientClaimsPrincipal<TMarker> user)
         {
-            ClientCacheConverter = clientCacheConverter;
-        }
-
-        public IClientCache<TMarker> Create<TMarker>(IClientClaimsPrincipal user)
-        {
-            return new Cache<TMarker>(ClientCacheConverter);
+            return new ClientCache<TMarker>();
         }
     }
 }

@@ -8,8 +8,9 @@ namespace Yellfage.Wst.Interior
 {
     internal class ClientManager<TMarker> : IClientManager<TMarker>
     {
-        public event ClientAddedEventHandler<TMarker>? Added;
-        public event ClientRemovedEventHandler<TMarker>? Removed;
+        public event ClientAddedEventHandler<TMarker> Added = (_) => Task.CompletedTask;
+        public event ClientRemovedEventHandler<TMarker> Removed = (_) => Task.CompletedTask;
+
         private IBus<TMarker> Bus { get; }
 
         public ClientManager(IBus<TMarker> bus)
@@ -17,18 +18,14 @@ namespace Yellfage.Wst.Interior
             Bus = bus;
         }
 
+
         public async Task AddAsync(IClient<TMarker> client, CancellationToken cancellationToken = default)
         {
             await Bus.AddClientAsync(client, cancellationToken);
 
-            if (Added is null)
-            {
-                return;
-            }
-
             foreach (ClientAddedEventHandler<TMarker> handler in Added.GetInvocationList())
             {
-                await handler.Invoke(new(client));
+                await handler.Invoke(new(this, client));
             }
         }
 
@@ -36,14 +33,9 @@ namespace Yellfage.Wst.Interior
         {
             await Bus.RemoveClientAsync(client, cancellationToken);
 
-            if (Removed is null)
-            {
-                return;
-            }
-
             foreach (ClientRemovedEventHandler<TMarker> handler in Removed.GetInvocationList())
             {
-                await handler.Invoke(new(client));
+                await handler.Invoke(new(this, client));
             }
         }
 

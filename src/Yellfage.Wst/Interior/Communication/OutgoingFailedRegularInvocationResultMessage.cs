@@ -7,10 +7,10 @@ namespace Yellfage.Wst.Interior.Communication
         public string Error { get; }
 
         public OutgoingFailedRegularInvocationResultMessage(
-            string invocationId,
+            string id,
             string error) : base(
                 OutgoingMessageType.FailedRegularInvocationResult,
-                invocationId)
+                id)
         {
             Error = error;
         }

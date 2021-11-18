@@ -1,7 +1,7 @@
 namespace Yellfage.Wst.Caching
 {
-    public interface IClientCacheFactory
+    public interface IClientCacheFactory<TMarker>
     {
-        IClientCache<TMarker> Create<TMarker>(IClientClaimsPrincipal user);
+        IClientCache<TMarker> Create(IClientClaimsPrincipal<TMarker> user);
     }
 }

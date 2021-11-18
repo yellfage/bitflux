@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yellfage.Wst", "Yellfage.Ws
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yellfage.Wst.Sample.Echo", "..\samples\Yellfage.Wst.Sample.Echo\Yellfage.Wst.Sample.Echo.csproj", "{45738196-CE7D-4AFE-A71A-CF78E355EB62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yellfage.Wst.Receptions.WebSockets", "Yellfage.Wst.Receptions.WebSockets\Yellfage.Wst.Receptions.WebSockets.csproj", "{09E4DB99-C42B-4D25-8E97-748D5649AEB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yellfage.Wst.Protocols.NewtonsoftJson", "Yellfage.Wst.Protocols.NewtonsoftJson\Yellfage.Wst.Protocols.NewtonsoftJson.csproj", "{95A62E3F-C442-4F93-8266-53C4FE5B4614}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45738196-CE7D-4AFE-A71A-CF78E355EB62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09E4DB99-C42B-4D25-8E97-748D5649AEB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09E4DB99-C42B-4D25-8E97-748D5649AEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09E4DB99-C42B-4D25-8E97-748D5649AEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09E4DB99-C42B-4D25-8E97-748D5649AEB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95A62E3F-C442-4F93-8266-53C4FE5B4614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95A62E3F-C442-4F93-8266-53C4FE5B4614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95A62E3F-C442-4F93-8266-53C4FE5B4614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95A62E3F-C442-4F93-8266-53C4FE5B4614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

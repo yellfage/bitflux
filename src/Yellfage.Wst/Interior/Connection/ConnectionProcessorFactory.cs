@@ -1,28 +1,22 @@
-using System;
-
-using Microsoft.Extensions.DependencyInjection;
-
 using Yellfage.Wst.Interior.Communication;
 
 namespace Yellfage.Wst.Interior.Connection
 {
-    internal class ConnectionProcessorFactory : IConnectionProcessorFactory
+    internal class ConnectionProcessorFactory<TMarker> : IConnectionProcessorFactory<TMarker>
     {
-        private IServiceProvider ServiceProvider { get; }
+        private IHub<TMarker> Hub { get; }
 
-        public ConnectionProcessorFactory(IServiceProvider serviceProvider)
+        public ConnectionProcessorFactory(IHub<TMarker> hub)
         {
-            ServiceProvider = serviceProvider;
+            Hub = hub;
         }
 
-        public IConnectionProcessor Create<TMarker>(
+        public IConnectionProcessor<TMarker> Create(
             IClient<TMarker> client,
-            IMessageDispatcher messageDispatcher)
+            IMessageDispatcher<TMarker> messageDispatcher)
         {
-            IHub<TMarker> hub = ServiceProvider.GetRequiredService<IHub<TMarker>>();
-
             return new ConnectionProcessor<TMarker>(
-                hub,
+                Hub,
                 client,
                 messageDispatcher);
         }

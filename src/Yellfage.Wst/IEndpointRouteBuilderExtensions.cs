@@ -1,61 +1,119 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
+using Yellfage.Wst.Communication;
 using Yellfage.Wst.Interior;
+using Yellfage.Wst.Interior.Communication;
+using Yellfage.Wst.Interior.Connection;
+using Yellfage.Wst.Interior.Mapping;
 
 namespace Yellfage.Wst
 {
     public static class IEndpointRouteBuilderExtensions
     {
-        public static IWstHubBuilder<TMarker> MapWstHub<TMarker>(
+        public static WstHubEndpointConventionBuilder MapWstHub<TMarker>(
             this IEndpointRouteBuilder builder,
             string pattern)
         {
             return builder.MapWstHub<TMarker>(pattern, builder => { });
         }
 
-        public static IWstHubBuilder<TMarker> MapWstHub<TMarker>(
+        public static WstHubEndpointConventionBuilder MapWstHub<TMarker>(
             this IEndpointRouteBuilder builder,
             string pattern,
-            Action<IApplicationBuilder> configureBuilder)
+            Action<IWstHubApplicationConfigurator<TMarker>> configure)
         {
-            EnsureServicesConfigured(builder.ServiceProvider);
+            EnsureServicesConfigured<TMarker>(builder.ServiceProvider);
+            EnsureReceptionsProvided<TMarker>(builder.ServiceProvider);
+            EnsureProtocolsProvided<TMarker>(builder.ServiceProvider);
 
-            // We do not need to dispose the created scope,
-            // because we are using scoped services until the application shutdown
-            IServiceScope scope = builder.ServiceProvider.CreateScope();
+            MapWstHubAgreement<TMarker>(builder, pattern);
 
-            IApplicationBuilder applicationBuilder = builder.CreateApplicationBuilder();
+            IApplicationBuilder application = builder.CreateApplicationBuilder();
 
-            applicationBuilder.ApplicationServices = scope.ServiceProvider;
+            IServiceProvider serviceProvider = application.ApplicationServices;
 
-            applicationBuilder
-                .UseHubWebSocket<TMarker>()
-                .UseWebSocketOnlyRestriction();
+            configure(new WstHubApplicationConfigurator<TMarker>(application));
 
-            configureBuilder(applicationBuilder);
+            serviceProvider.GetRequiredService<IHubMapper<TMarker>>().Map();
 
-            applicationBuilder.UseWebSocketAcceptance<TMarker>();
+            application.Use((context, _) => serviceProvider
+                .GetRequiredService<IConnectionRequestProcessor<TMarker>>()
+                .ProcessAsync(context));
 
-            return new WstHubBuilder<TMarker>(
-                pattern,
-                applicationBuilder,
-                builder);
+            IEndpointConventionBuilder endpointConventionBuilder = builder
+                .Map(pattern, application.Build());
+
+            return new WstHubEndpointConventionBuilder(endpointConventionBuilder);
         }
 
-        private static void EnsureServicesConfigured(IServiceProvider serviceProvider)
+        private static IEndpointRouteBuilder MapWstHubAgreement<TMarker>(
+            this IEndpointRouteBuilder builder,
+            string pattern)
         {
-            WstMarkerService? markerService = serviceProvider.GetService<WstMarkerService>();
+            builder.MapGet($"{pattern.TrimEnd('/')}/agreement", async context =>
+            {
+                await builder
+                    .ServiceProvider
+                    .GetRequiredService<IAgreementRequestProcessor<TMarker>>()
+                    .ProcessAsync(context);
+            });
+
+            return builder;
+        }
+
+        private static void EnsureServicesConfigured<TMarker>(IServiceProvider serviceProvider)
+        {
+            MarkerService<TMarker>? markerService = serviceProvider
+                .GetService<MarkerService<TMarker>>();
 
             if (markerService is null)
             {
                 throw new InvalidOperationException(
-                    "Required services not found. " +
+                    $"Unable to map the Hub with the \"{typeof(TMarker).Name}\" marker: " +
+                    $"required services not found. " +
                     "Please add all the required services by calling " +
-                    "'IServiceCollection.AddWst' inside the 'ConfigureServices(...)' call " +
+                    "\"IServiceCollection.AddWstHub<>(...)\" " +
+                    $"inside the \"ConfigureServices(...)\" call " +
+                    "in the application startup code");
+            }
+        }
+
+        private static void EnsureReceptionsProvided<TMarker>(IServiceProvider serviceProvider)
+        {
+            IEnumerable<IReception<TMarker>> receptions = serviceProvider
+                .GetRequiredService<IEnumerable<IReception<TMarker>>>();
+
+            if (!receptions.Any())
+            {
+                throw new InvalidOperationException(
+                    $"Unable to map a Hub with the \"{typeof(TMarker).Name}\" marker: " +
+                    $"none {nameof(IReception<TMarker>)} is provided. " +
+                    $"Please provide at least one {nameof(IReception<TMarker>)} by calling " +
+                    $"\"IServiceCollection.AddWstHub<>(...).AddReception(...)\" " +
+                    $"inside the 'ConfigureServices(...)' call " +
+                    "in the application startup code");
+            }
+        }
+
+        private static void EnsureProtocolsProvided<TMarker>(IServiceProvider serviceProvider)
+        {
+            IEnumerable<IProtocol<TMarker>> protocols = serviceProvider
+                .GetRequiredService<IEnumerable<IProtocol<TMarker>>>();
+
+            if (!protocols.Any())
+            {
+                throw new InvalidOperationException(
+                    $"Unable to map a Hub with the \"{typeof(TMarker).Name}\" marker: " +
+                    $"none {nameof(IProtocol<TMarker>)} is provided. " +
+                    $"Please provide at least one {nameof(IProtocol<TMarker>)} by calling " +
+                    $"\"IServiceCollection.AddWstHub<>(...).AddProtocol(...)\" " +
+                    $"inside the 'ConfigureServices(...)' call " +
                     "in the application startup code");
             }
         }

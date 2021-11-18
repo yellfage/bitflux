@@ -1,11 +1,10 @@
-using System.Net.WebSockets;
 
 using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageTransmitterFactory
+    internal interface IMessageTransmitterFactory<TMarker>
     {
-        IMessageTransmitter Create(WebSocket webSocket, IProtocol protocol);
+        IMessageTransmitter<TMarker> Create(ITransport<TMarker> transport, IProtocol<TMarker> protocol);
     }
 }

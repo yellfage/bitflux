@@ -11,6 +11,7 @@ namespace Yellfage.Wst.Bussing
 
         Task AddClientToGroupAsync(string groupName, IClient<TMarker> client, CancellationToken cancellationToken = default);
         Task RemoveClientFromGroupAsync(string groupName, IClient<TMarker> client, CancellationToken cancellationToken = default);
+        Task RemoveClientFromAllGroupsAsync(IClient<TMarker> client, CancellationToken cancellationToken = default);
 
         Task NotifyAllAsync(string handlerName, object?[] arguments, CancellationToken cancellationToken = default);
         Task NotifyAllExceptAsync(IClient<TMarker> excluded, string handlerName, object?[] arguments, CancellationToken cancellationToken = default);

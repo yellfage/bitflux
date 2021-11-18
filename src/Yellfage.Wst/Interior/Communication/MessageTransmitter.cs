@@ -1,4 +1,3 @@
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,28 +5,24 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class MessageTransmitter : IMessageTransmitter
+    internal class MessageTransmitter<TMarker> : IMessageTransmitter<TMarker>
     {
-        private WebSocket WebSocket { get; }
-        private IProtocol Protocol { get; }
+        private ITransport<TMarker> Transport { get; }
+        private IProtocol<TMarker> Protocol { get; }
 
-        public MessageTransmitter(WebSocket webSocket, IProtocol protocol)
+        public MessageTransmitter(ITransport<TMarker> transport, IProtocol<TMarker> protocol)
         {
-            WebSocket = webSocket;
+            Transport = transport;
             Protocol = protocol;
         }
 
-        public async Task TransmitAsync(OutgoingMessage message, CancellationToken cancellationToken)
+        public async Task TransmitAsync(
+            OutgoingMessage message,
+            CancellationToken cancellationToken = default)
         {
-            if (WebSocket.State != WebSocketState.Open)
-            {
-                return;
-            }
-
-            await WebSocket.SendAsync(
+            await Transport.SendAsync(
                 Protocol.Serialize(message),
-                (WebSocketMessageType)Protocol.TransferFormat,
-                true,
+                Protocol.TransferFormat,
                 cancellationToken);
         }
     }

@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 
 using Yellfage.Wst.Caching;
-using Yellfage.Wst.Interior.Communication;
 using Yellfage.Wst.Interior.Disconnection;
+using Yellfage.Wst.Interior.Notification;
 
 namespace Yellfage.Wst.Interior
 {
-    internal class ClientFactory : IClientFactory
+    internal class ClientFactory<TMarker> : IClientFactory<TMarker>
     {
-        public IClient<TMarker> Create<TMarker>(
+        public IClient<TMarker> Create(
             string id,
             string ip,
             string userAgent,
             IDictionary<object, object> records,
-            IClientClaimsPrincipal user,
-            IClientCache<TMarker> cache,
-            IMessageTransmitter messageTransmitter,
-            IClientDisconnector clientDisconnector)
+            IClientClaimsPrincipal<TMarker> user,
+            IClientCache<TMarker> clientCache,
+            IClientNotifier<TMarker> clientNotifier,
+            IClientDisconnector<TMarker> clientDisconnector)
         {
             return new Client<TMarker>(
                 id,
@@ -24,8 +24,8 @@ namespace Yellfage.Wst.Interior
                 userAgent,
                 records,
                 user,
-                cache,
-                messageTransmitter,
+                clientCache,
+                clientNotifier,
                 clientDisconnector);
         }
     }

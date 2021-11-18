@@ -2,18 +2,18 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class MessageDeserializerFactory : IMessageDeserializerFactory
+    internal class MessageDeserializerFactory<TMarker> : IMessageDeserializerFactory<TMarker>
     {
-        private IMessageTypeResolver MessageTypeResolver { get; }
+        private IMessageTypeResolver<TMarker> MessageTypeResolver { get; }
 
-        public MessageDeserializerFactory(IMessageTypeResolver messageTypeResolver)
+        public MessageDeserializerFactory(IMessageTypeResolver<TMarker> messageTypeResolver)
         {
             MessageTypeResolver = messageTypeResolver;
         }
 
-        public IMessageDeserializer Create(IProtocol protocol)
+        public IMessageDeserializer<TMarker> Create(IProtocol<TMarker> protocol)
         {
-            return new MessageDeserializer(protocol, MessageTypeResolver);
+            return new MessageDeserializer<TMarker>(protocol, MessageTypeResolver);
         }
     }
 }

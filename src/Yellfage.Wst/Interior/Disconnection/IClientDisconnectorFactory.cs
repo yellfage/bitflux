@@ -1,9 +1,9 @@
-using System.Net.WebSockets;
+using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Disconnection
 {
-    internal interface IClientDisconnectorFactory
+    internal interface IClientDisconnectorFactory<TMarker>
     {
-        IClientDisconnector Create(WebSocket webSocket);
+        IClientDisconnector<TMarker> Create(ITransport<TMarker> transport);
     }
 }

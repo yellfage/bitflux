@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Yellfage.Wst.Protocols.NewtonsoftJson\Yellfage.Wst.Protocols.NewtonsoftJson.csproj" />
+    <ProjectReference Include="..\..\src\Yellfage.Wst.Receptions.WebSockets\Yellfage.Wst.Receptions.WebSockets.csproj" />
     <ProjectReference Include="..\..\src\Yellfage.Wst\Yellfage.Wst.csproj" />
   </ItemGroup>
 

@@ -1,31 +1,24 @@
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Yellfage.Wst.Communication;
+
 namespace Yellfage.Wst.Interior.Disconnection
 {
-    internal class ClientDisconnector : IClientDisconnector
+    internal class ClientDisconnector<TMarker> : IClientDisconnector<TMarker>
     {
-        private WebSocket WebSocket { get; }
+        private ITransport<TMarker> Transport { get; }
 
-        public ClientDisconnector(WebSocket webSocket)
+        public ClientDisconnector(ITransport<TMarker> transport)
         {
-            WebSocket = webSocket;
+            Transport = transport;
         }
 
         public async Task DisconnectAsync(
             string reason,
             CancellationToken cancellationToken = default)
         {
-            if (WebSocket.State != WebSocketState.Open)
-            {
-                return;
-            }
-
-            await WebSocket.CloseOutputAsync(
-                WebSocketCloseStatus.NormalClosure,
-                reason,
-                cancellationToken);
+            await Transport.StopAsync(reason, cancellationToken);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Yellfage.Wst
         IHub<TMarker> Hub { get; }
         IClient<TMarker> Client { get; }
         IServiceProvider ServiceProvider { get; }
+        string Id { get; }
         string HandlerName { get; }
         IList<object?> Arguments { get; }
 

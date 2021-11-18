@@ -10,39 +10,24 @@ namespace Yellfage.Wst.Interior.Bussing
 {
     internal class Bus<TMarker> : IBus<TMarker>
     {
-        private IDictionary<string, IClient<TMarker>> Clients { get; }
-        private IDictionary<string, IList<IClient<TMarker>>> Groups { get; }
+        private ConcurrentDictionary<string, IClient<TMarker>> Clients { get; } = new();
+        private ConcurrentDictionary<string, IList<IClient<TMarker>>> Groups { get; } = new();
 
-        public Bus()
-        {
-            Clients = new ConcurrentDictionary<string, IClient<TMarker>>();
-            Groups = new ConcurrentDictionary<string, IList<IClient<TMarker>>>();
-        }
-
-        public Task AddClientAsync(
+        public async Task AddClientAsync(
             IClient<TMarker> client,
             CancellationToken cancellationToken = default)
         {
             Clients[client.Id] = client;
-
-            return Task.CompletedTask;
         }
 
-        public Task RemoveClientAsync(
+        public async Task RemoveClientAsync(
             IClient<TMarker> client,
             CancellationToken cancellationToken = default)
         {
-            foreach (IList<IClient<TMarker>> clients in Groups.Values)
-            {
-                clients.Remove(client);
-            }
-
-            Clients.Remove(client.Id);
-
-            return Task.CompletedTask;
+            Clients.Remove(client.Id, out IClient<TMarker> _);
         }
 
-        public Task AddClientToGroupAsync(
+        public async Task AddClientToGroupAsync(
             string groupName,
             IClient<TMarker> client,
             CancellationToken cancellationToken = default)
@@ -50,31 +35,39 @@ namespace Yellfage.Wst.Interior.Bussing
             if (Groups.TryGetValue(groupName, out IList<IClient<TMarker>>? clients))
             {
                 clients.Add(client);
-
-                return Task.CompletedTask;
             }
 
             Groups[groupName] = new List<IClient<TMarker>>() { client };
-
-            return Task.CompletedTask;
         }
 
-        public Task RemoveClientFromGroupAsync(
+        public async Task RemoveClientFromGroupAsync(
             string groupName,
             IClient<TMarker> client,
             CancellationToken cancellationToken = default)
         {
             if (Groups.TryGetValue(groupName, out IList<IClient<TMarker>>? clients))
             {
-                if (!clients.Remove(client) || clients.Any())
+                if (!clients.Remove(client))
                 {
-                    return Task.CompletedTask;
+                    return;
                 }
 
-                Groups.Remove(groupName);
+                if (!clients.Any())
+                {
+                    Groups.Remove(groupName, out IList<IClient<TMarker>> _);
+                }
             }
+        }
 
-            return Task.CompletedTask;
+        public async Task RemoveClientFromAllGroupsAsync(
+            IClient<TMarker> client,
+            CancellationToken cancellationToken = default)
+        {
+            await Task.WhenAll(
+                Groups
+                    .Where(pair => pair.Value.Contains(client))
+                    .Select(pair => pair.Key)
+                    .Select(groupName => RemoveClientFromGroupAsync(groupName, client, cancellationToken)));
         }
 
         public async Task NotifyAllAsync(
@@ -84,8 +77,8 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 Clients
-                .Values
-                .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
+                    .Values
+                    .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
         }
 
         public async Task NotifyAllExceptAsync(
@@ -96,9 +89,9 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 Clients
-                .Values
-                .Except(new[] { excluded })
-                .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
+                    .Values
+                    .Except(new[] { excluded })
+                    .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
         }
 
         public async Task NotifyGroupAsync(
@@ -109,7 +102,7 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 Groups[groupName]
-                .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
+                    .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
         }
 
         public async Task NotifyGroupExceptAsync(
@@ -121,8 +114,8 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 Groups[groupName]
-                .Except(new[] { excluded })
-                .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
+                    .Except(new[] { excluded })
+                    .Select(client => client.NotifyAsync(handlerName, arguments, cancellationToken)));
         }
 
         public async Task NotifyManyGroupsAsync(
@@ -133,7 +126,7 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 groupNames
-                .Select(name => NotifyGroupAsync(name, handlerName, arguments, cancellationToken)));
+                    .Select(name => NotifyGroupAsync(name, handlerName, arguments, cancellationToken)));
         }
 
         public async Task NotifyManyGroupsExceptAsync(
@@ -145,7 +138,7 @@ namespace Yellfage.Wst.Interior.Bussing
         {
             await Task.WhenAll(
                 groupNames
-                .Select(name => NotifyGroupExceptAsync(name, excluded, handlerName, arguments, cancellationToken)));
+                    .Select(name => NotifyGroupExceptAsync(name, excluded, handlerName, arguments, cancellationToken)));
         }
     }
 }

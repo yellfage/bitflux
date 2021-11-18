@@ -8,12 +8,13 @@ namespace Yellfage.Wst.Interior.Communication
 {
     internal abstract class IncomingInvocationMessage : IncomingMessage
     {
+        public string Id { get; set; }
         public string HandlerName { get; set; }
         public IList<object?> Arguments { get; set; }
 
-        protected bool IsInvocationMessageValid()
+        internal override bool IsValid()
         {
-            return HandlerName is not null && Arguments is not null;
+            return Id is not null && HandlerName is not null && Arguments is not null;
         }
     }
 }

@@ -1,42 +1,45 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
-using Microsoft.Extensions.DependencyInjection;
-
-using Yellfage.Wst.Filtration;
-using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Filters;
+using Yellfage.Wst.Interior.Filters;
 
 namespace Yellfage.Wst.Interior.Mapping
 {
-    internal class HubMapper : Mapper, IHubMapper
+    internal class HubMapper<TMarker> : IHubMapper<TMarker>
     {
-        private IServiceProvider ServiceProvider { get; }
-        private IHubFilterStore HubFilterStore { get; }
+        private IHub<TMarker> Hub { get; }
+        private IFilterExplorer<TMarker> FilterExplorer { get; }
+        private IWorkerMapper<TMarker> WorkerMapper { get; }
 
         public HubMapper(
-            IFilterScreener filterScreener,
-            IFilterExplorer filterExplorer,
-            IServiceProvider serviceProvider,
-            IHubFilterStore hubFilterStore) : base(
-                filterScreener,
-                filterExplorer)
+            IHub<TMarker> hub,
+            IFilterExplorer<TMarker> filterExplorer,
+            IWorkerMapper<TMarker> workerMapper)
         {
-            ServiceProvider = serviceProvider;
-            HubFilterStore = hubFilterStore;
+            Hub = hub;
+            FilterExplorer = filterExplorer;
+            WorkerMapper = workerMapper;
         }
 
-        public void Map<TMarker>()
+        public void Map()
         {
-            IHub<TMarker> hub = ResolveHub<TMarker>();
+            IEnumerable<IFilter> filters = FilterExplorer.Explore(Hub.GetType());
 
-            IEnumerable<IFilter> filters = ResolveFilters(hub.GetType());
-
-            HubFilterStore.AddRange(filters);
+            foreach (Type type in ResolveWorkerTypes())
+            {
+                WorkerMapper.Map(type, filters);
+            }
         }
 
-        private IHub<TMarker> ResolveHub<TMarker>()
+        private IEnumerable<Type> ResolveWorkerTypes()
         {
-            return ServiceProvider.GetRequiredService<IHub<TMarker>>();
+            return Assembly
+                .GetEntryAssembly()!
+                .DefinedTypes
+                .Where(type => typeof(IWorker<TMarker>).IsAssignableFrom(type));
         }
     }
 }

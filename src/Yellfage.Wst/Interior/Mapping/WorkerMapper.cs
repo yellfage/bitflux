@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using Yellfage.Wst.Filtration;
-using Yellfage.Wst.Interior.Filtration;
+using Yellfage.Wst.Filters;
+using Yellfage.Wst.Interior.Filters;
 
 namespace Yellfage.Wst.Interior.Mapping
 {
-    internal class WorkerMapper : Mapper, IWorkerMapper
+    internal class WorkerMapper<TMarker> : IWorkerMapper<TMarker>
     {
-        private IHubFilterStore HubFilterStore { get; }
-        private IHandlerMapper HandlerMapper { get; }
+        private IFilterExplorer<TMarker> FilterExplorer { get; }
+        private IHandlerMapper<TMarker> HandlerMapper { get; }
 
         public WorkerMapper(
-            IFilterScreener filterScreener,
-            IFilterExplorer filterExplorer,
-            IHubFilterStore hubFilterStore,
-            IHandlerMapper handlerMapper) : base(filterScreener, filterExplorer)
+            IFilterExplorer<TMarker> filterExplorer,
+            IHandlerMapper<TMarker> handlerMapper)
         {
-            HubFilterStore = hubFilterStore;
+            FilterExplorer = filterExplorer;
             HandlerMapper = handlerMapper;
         }
 
-        public void Map(Type type)
+        public void Map(Type type, IEnumerable<IFilter> outerFilters)
         {
-            IEnumerable<IFilter> filters = ResolveFilters(type, HubFilterStore.GetAll());
+            IEnumerable<IFilter> filters = outerFilters.Concat(FilterExplorer.Explore(type));
 
             foreach (MethodInfo method in ResolveMethods(type))
             {

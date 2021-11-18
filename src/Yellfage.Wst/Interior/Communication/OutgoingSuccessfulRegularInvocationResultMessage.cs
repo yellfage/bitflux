@@ -7,10 +7,10 @@ namespace Yellfage.Wst.Interior.Communication
         public object? Value { get; }
 
         public OutgoingSuccessfulRegularInvocationResultMessage(
-            string invocationId,
+            string id,
             object? value) : base(
                 OutgoingMessageType.SuccessfulRegularInvocationResult,
-                invocationId)
+                id)
         {
             Value = value;
         }

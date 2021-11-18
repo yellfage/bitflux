@@ -1,9 +1,9 @@
-using System.Net.WebSockets;
+using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageReceiverFactory
+    internal interface IMessageReceiverFactory<TMarker>
     {
-        IMessageReceiver Create<TMarker>(WebSocket webSocket, IMessageDeserializer messageDeserializer);
+        IMessageReceiver<TMarker> Create(ITransport<TMarker> transport, IMessageDeserializer<TMarker> messageDeserializer);
     }
 }

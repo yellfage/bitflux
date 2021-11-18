@@ -4,13 +4,13 @@ namespace Yellfage.Wst.Interior.Communication
 {
     internal abstract class OutgoingRegularInvocationResultMessage : OutgoingMessage
     {
-        public string InvocationId { get; }
+        public string Id { get; }
 
         public OutgoingRegularInvocationResultMessage(
             OutgoingMessageType type,
-            string invocationId) : base(type)
+            string id) : base(type)
         {
-            InvocationId = invocationId;
+            Id = id;
         }
     }
 }

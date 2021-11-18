@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Yellfage.Wst.Receptions.WebSockets;
+using Yellfage.Wst.Protocols.NewtonsoftJson;
+
 namespace Yellfage.Wst.Sample.Echo
 {
     public class Startup
@@ -10,7 +13,13 @@ namespace Yellfage.Wst.Sample.Echo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddWst();
+
+            services.AddCors();
+
+            services
+                .AddWstHub<EchoHub>()
+                .AddWebSocketReception()
+                .AddNewtonsoftJsonProtocol();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -20,16 +29,20 @@ namespace Yellfage.Wst.Sample.Echo
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(o => o.AllowAnyOrigin());
+
+            app.UseHttpsRedirection();
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
 
-                endpoints
-                    .MapWstHub<EchoHub>("/ws")
-                    .AddWorker<EchoWorker>()
-                    .Build();
+                endpoints.MapWstHub<EchoHub>("/ws", configurator =>
+                {
+                    configurator.UseWebSocketReception();
+                });
             });
         }
     }

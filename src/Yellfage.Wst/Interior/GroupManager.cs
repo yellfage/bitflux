@@ -10,6 +10,9 @@ namespace Yellfage.Wst.Interior
 {
     internal class GroupManager<TMarker> : IGroupManager<TMarker>
     {
+        public event ClientAddedToGroupEventHandler<TMarker> Added = (_) => Task.CompletedTask;
+        public event ClientRemovedFromGroupEventHandler<TMarker> Removed = (_) => Task.CompletedTask;
+
         private IBus<TMarker> Bus { get; }
 
         public GroupManager(IBus<TMarker> bus)
@@ -20,21 +23,48 @@ namespace Yellfage.Wst.Interior
         public async Task AddAsync(string groupName, IClient<TMarker> client, CancellationToken cancellationToken = default)
         {
             await Bus.AddClientToGroupAsync(groupName, client, cancellationToken);
+
+            foreach (ClientAddedToGroupEventHandler<TMarker> handler in Added.GetInvocationList())
+            {
+                await handler.Invoke(new(this, groupName, client));
+            }
         }
 
         public async Task AddManyAsync(IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default)
         {
-            await Task.WhenAll(groupNames.Select(name => AddAsync(name, client, cancellationToken)));
+            await AddManyAsync("", groupNames, client, cancellationToken);
+        }
+
+        public async Task AddManyAsync(string groupNamePrefix, IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default)
+        {
+            await Task.WhenAll(
+                groupNames.Select(name => AddAsync(groupNamePrefix + name, client, cancellationToken)));
         }
 
         public async Task RemoveAsync(string groupName, IClient<TMarker> client, CancellationToken cancellationToken = default)
         {
             await Bus.RemoveClientFromGroupAsync(groupName, client, cancellationToken);
+
+            foreach (ClientRemovedFromGroupEventHandler<TMarker> handler in Removed.GetInvocationList())
+            {
+                await handler.Invoke(new(this, groupName, client));
+            }
         }
 
         public async Task RemoveManyAsync(IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default)
         {
-            await Task.WhenAll(groupNames.Select(name => RemoveAsync(name, client, cancellationToken)));
+            await RemoveManyAsync("", groupNames, client, cancellationToken);
+        }
+
+        public async Task RemoveManyAsync(string groupNamePrefix, IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default)
+        {
+            await Task.WhenAll(
+                groupNames.Select(name => RemoveAsync(groupNamePrefix + name, client, cancellationToken)));
+        }
+
+        public async Task RemoveAll(IClient<TMarker> client, CancellationToken cancellationToken = default)
+        {
+            await Bus.RemoveClientFromAllGroupsAsync(client, cancellationToken);
         }
 
         public async Task NotifyAsync(string groupName, string handlerName, CancellationToken cancellationToken = default)

@@ -11,7 +11,7 @@ namespace Yellfage.Wst
         string Id { get; }
         string Ip { get; }
         string UserAgent { get; }
-        IClientClaimsPrincipal User { get; }
+        IClientClaimsPrincipal<TMarker> User { get; }
         IClientCache<TMarker> Cache { get; }
         IDictionary<object, object> Records { get; }
 

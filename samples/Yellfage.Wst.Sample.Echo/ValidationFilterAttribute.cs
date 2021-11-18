@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-using Yellfage.Wst.Filtration;
+using Yellfage.Wst.Filters;
 
 namespace Yellfage.Wst.Sample.Echo
 {
     public class ValidationFilterAttribute : DefaultValidationFilterAttribute
     {
-        public override Task OnFailureAsync<TMarker>(
-            IInvocationExecutionContext<TMarker> context,
+        public override Task<object?> OnFailureAsync<TMarker>(
+            IInvocationContext<TMarker> context,
             ValidationContext validationContext,
             ICollection<ValidationResult> validationResults)
         {

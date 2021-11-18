@@ -1,130 +1,43 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class MessageReceiver : IMessageReceiver
+    internal class MessageReceiver<TMarker> : IMessageReceiver<TMarker>
     {
-        private int MessageSegmentSize { get; }
-        private int MaxMessageSize { get; }
-        private WebSocket WebSocket { get; }
-        private IMessageDeserializer MessageDeserializer { get; }
+        private ITransport<TMarker> Transport { get; }
+        private IMessageDeserializer<TMarker> MessageDeserializer { get; }
 
-        public MessageReceiver(
-            int messageSegmentSize,
-            int maxMessageSize,
-            WebSocket webSocket,
-            IMessageDeserializer messageDeserializer)
+        public MessageReceiver(ITransport<TMarker> transport, IMessageDeserializer<TMarker> messageDeserializer)
         {
-            MessageSegmentSize = messageSegmentSize;
-            MaxMessageSize = maxMessageSize;
-            WebSocket = webSocket;
+            Transport = transport;
             MessageDeserializer = messageDeserializer;
         }
 
-        public async Task StartReceivingAsync(Func<IncomingMessage, Task> processMessageAsync)
+        public async Task StartAsync(Func<IncomingMessage, Task> messageHandler)
         {
-            await StartBytesReceivingAsync(async bytes =>
+            await Transport.StartAsync(async bytes =>
             {
                 if (MessageDeserializer.TryDeserialize(bytes, out IncomingMessage? message))
                 {
                     if (!message.IsValid())
                     {
-                        await WebSocket.CloseOutputAsync(
-                            WebSocketCloseStatus.ProtocolError,
-                            "The incoming message is invalid",
-                            default);
+                        await Transport.StopAsync("The incoming message is invalid");
 
                         return;
                     }
 
-                    await processMessageAsync.Invoke(message);
+                    await messageHandler.Invoke(message);
                 }
                 else
                 {
-                    await WebSocket.CloseOutputAsync(
-                        WebSocketCloseStatus.ProtocolError,
-                        "Unable to deserialize the received message",
-                        default);
+                    await Transport.StopAsync("Unable to deserialize the received message");
 
                     return;
                 }
             });
-        }
-
-        private async Task StartBytesReceivingAsync(
-            Func<ArraySegment<byte>, Task> processBytesAsync)
-        {
-            try
-            {
-                while (true)
-                {
-                    WebSocketReceiveResult receiveResult = await WebSocket.ReceiveAsync(
-                        Array.Empty<byte>(),
-                        default);
-
-                    if (receiveResult.MessageType == WebSocketMessageType.Close)
-                    {
-                        await WebSocket.CloseOutputAsync(
-                            WebSocket.CloseStatus ?? WebSocketCloseStatus.NormalClosure,
-                            WebSocket.CloseStatusDescription,
-                            default);
-
-                        return;
-                    }
-
-                    if (receiveResult.EndOfMessage)
-                    {
-                        continue;
-                    }
-
-                    byte[] messageSegment = new byte[MessageSegmentSize];
-
-                    receiveResult = await WebSocket.ReceiveAsync(messageSegment, default);
-
-                    if (receiveResult.EndOfMessage)
-                    {
-                        await processBytesAsync.Invoke(messageSegment);
-
-                        continue;
-                    }
-
-                    var fullMessage = new List<byte>();
-
-                    do
-                    {
-                        if (fullMessage.Count >= MaxMessageSize)
-                        {
-                            await WebSocket.CloseOutputAsync(
-                                WebSocketCloseStatus.MessageTooBig,
-                                "Message too big",
-                                default);
-
-                            return;
-                        }
-
-                        fullMessage.AddRange(messageSegment.AsEnumerable());
-
-                        messageSegment = new byte[MessageSegmentSize];
-
-                        receiveResult = await WebSocket.ReceiveAsync(messageSegment, default);
-                    }
-                    while (!receiveResult.EndOfMessage);
-
-                    fullMessage.AddRange(messageSegment.AsEnumerable());
-
-                    await processBytesAsync.Invoke(fullMessage.ToArray());
-                }
-            }
-            catch (WebSocketException)
-            {
-            }
         }
     }
 }

@@ -1,17 +1,19 @@
 using System;
 using System.Threading.Tasks;
 
-using Yellfage.Wst.Filtration;
+using Yellfage.Wst.Filters;
 
 namespace Yellfage.Wst.Sample.Echo
 {
-    public class HandlerFilterAttribute : FilterAttribute
+    public class HandlerFilterAttribute : Attribute, IFilter
     {
-        public override async Task ApplyAsync<T>(IInvocationExecutionContext<T> context, Func<Task> next)
+        public Task<object?> ApplyAsync<TMarker>(
+            IInvocationContext<TMarker> context,
+            Func<Task<object?>> next)
         {
             Console.WriteLine("Handler filter");
 
-            await next();
+            return next();
         }
     }
 }

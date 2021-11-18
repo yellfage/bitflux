@@ -1,12 +1,12 @@
-using System.Net.WebSockets;
+using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Disconnection
 {
-    internal class ClientDisconnectorFactory : IClientDisconnectorFactory
+    internal class ClientDisconnectorFactory<TMarker> : IClientDisconnectorFactory<TMarker>
     {
-        public IClientDisconnector Create(WebSocket webSocket)
+        public IClientDisconnector<TMarker> Create(ITransport<TMarker> transport)
         {
-            return new ClientDisconnector(webSocket);
+            return new ClientDisconnector<TMarker>(transport);
         }
     }
 }

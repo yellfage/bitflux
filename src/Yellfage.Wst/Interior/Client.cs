@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Yellfage.Wst.Caching;
-using Yellfage.Wst.Interior.Communication;
 using Yellfage.Wst.Interior.Disconnection;
+using Yellfage.Wst.Interior.Notification;
 
 namespace Yellfage.Wst.Interior
 {
@@ -15,21 +15,21 @@ namespace Yellfage.Wst.Interior
         public string Ip { get; }
         public string UserAgent { get; }
         public IDictionary<object, object> Records { get; }
-        public IClientClaimsPrincipal User { get; }
+        public IClientClaimsPrincipal<TMarker> User { get; }
         public IClientCache<TMarker> Cache { get; }
 
-        private IMessageTransmitter MessageTransmitter { get; }
-        private IClientDisconnector ClientDisconnector { get; }
+        private IClientNotifier<TMarker> ClientNotifier { get; }
+        private IClientDisconnector<TMarker> ClientDisconnector { get; }
 
         public Client(
             string id,
             string ip,
             string userAgent,
             IDictionary<object, object> records,
-            IClientClaimsPrincipal user,
+            IClientClaimsPrincipal<TMarker> user,
             IClientCache<TMarker> cache,
-            IMessageTransmitter messageTransmitter,
-            IClientDisconnector clientDisconnector)
+            IClientNotifier<TMarker> clientNotifier,
+            IClientDisconnector<TMarker> clientDisconnector)
         {
             Id = id;
             Ip = ip;
@@ -37,7 +37,7 @@ namespace Yellfage.Wst.Interior
             Records = records;
             User = user;
             Cache = cache;
-            MessageTransmitter = messageTransmitter;
+            ClientNotifier = clientNotifier;
             ClientDisconnector = clientDisconnector;
         }
 
@@ -108,9 +108,7 @@ namespace Yellfage.Wst.Interior
                 throw new ArgumentNullException(nameof(arguments));
             }
 
-            var message = new OutgoingNotifiableInvocationMessage(handlerName, arguments);
-
-            await MessageTransmitter.TransmitAsync(message, cancellationToken);
+            await ClientNotifier.NotifyAsync(handlerName, arguments, cancellationToken);
         }
 
         public async Task DisconnectAsync(CancellationToken cancellationToken = default)

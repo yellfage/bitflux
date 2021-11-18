@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,21 +6,23 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class ProtocolProvider : IProtocolProvider
+    internal class ProtocolProvider<TMarker> : IProtocolProvider<TMarker>
     {
-        private IEnumerable<IProtocol> Protocols { get; }
+        private IEnumerable<IProtocol<TMarker>> Protocols { get; }
 
-        public ProtocolProvider(IEnumerable<IProtocol> protocols)
+        public ProtocolProvider(IEnumerable<IProtocol<TMarker>> protocols)
         {
             Protocols = protocols;
         }
 
-        public bool TryChoose(
-            IEnumerable<string> names,
-            [MaybeNullWhen(false)] out IProtocol protocol)
+        public IEnumerable<IProtocol<TMarker>> GetAll()
         {
-            protocol = Protocols
-                    .FirstOrDefault(protocol => names.Contains(protocol.Name));
+            return Protocols;
+        }
+
+        public bool TryGet(string name, [MaybeNullWhen(false)] out IProtocol<TMarker> protocol)
+        {
+            protocol = Protocols.FirstOrDefault(protocol => protocol.Name == name);
 
             return protocol is not null;
         }

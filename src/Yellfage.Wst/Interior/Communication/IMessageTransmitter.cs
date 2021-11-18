@@ -5,8 +5,8 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageTransmitter
+    internal interface IMessageTransmitter<TMarker>
     {
-        Task TransmitAsync(OutgoingMessage message, CancellationToken cancellationToken);
+        Task TransmitAsync(OutgoingMessage message, CancellationToken cancellationToken = default);
     }
 }

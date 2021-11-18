@@ -2,8 +2,8 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageDeserializerFactory
+    internal interface IMessageDeserializerFactory<TMarker>
     {
-        IMessageDeserializer Create(IProtocol protocol);
+        IMessageDeserializer<TMarker> Create(IProtocol<TMarker> protocol);
     }
 }

@@ -5,8 +5,8 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IMessageReceiver
+    internal interface IMessageReceiver<TMarker>
     {
-        Task StartReceivingAsync(Func<IncomingMessage, Task> processMessageAsync);
+        Task StartAsync(Func<IncomingMessage, Task> messageHandler);
     }
 }

@@ -12,6 +12,9 @@ namespace Yellfage.Wst.Sample.Echo
         {
             Clients.Added += OnClientAddedAsync;
             Clients.Removed += OnClientRemovedAsync;
+
+            Groups.Added += OnClientAddedToGroupAsync;
+            Groups.Removed += OnClientRemovedFromGroupAsync;
         }
 
         private async Task OnClientAddedAsync(ClientAddedEvent<EchoHub> ev)
@@ -20,12 +23,26 @@ namespace Yellfage.Wst.Sample.Echo
 
             IList<string> chatIds = new List<string>() { "1", "2", "3" };
 
-            await Groups.AddManyAsync(chatIds, ev.Client);
+            await Groups.AddManyAsync("chat:", chatIds, ev.Client);
         }
 
         private Task OnClientRemovedAsync(ClientRemovedEvent<EchoHub> ev)
         {
             Console.WriteLine($"Client with '{ev.Client.Id}' id removed");
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnClientAddedToGroupAsync(ClientAddedToGroupEvent<EchoHub> ev)
+        {
+            Console.WriteLine($"Client with '{ev.Client.Id}' id added to '{ev.GroupName}' group");
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnClientRemovedFromGroupAsync(ClientRemovedFromGroupEvent<EchoHub> ev)
+        {
+            Console.WriteLine($"Client with '{ev.Client.Id}' id removed from '{ev.GroupName}' group");
 
             return Task.CompletedTask;
         }

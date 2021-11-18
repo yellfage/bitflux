@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace Yellfage.Wst.Interior
 {
-    internal class ClientClaimsPrincipal : IClientClaimsPrincipal
+    internal class ClientClaimsPrincipal<TMarker> : IClientClaimsPrincipal<TMarker>
     {
         public ClaimsPrincipal Current { get; set; }
 

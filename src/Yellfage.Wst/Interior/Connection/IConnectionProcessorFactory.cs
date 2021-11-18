@@ -2,8 +2,8 @@ using Yellfage.Wst.Interior.Communication;
 
 namespace Yellfage.Wst.Interior.Connection
 {
-    internal interface IConnectionProcessorFactory
+    internal interface IConnectionProcessorFactory<TMarker>
     {
-        IConnectionProcessor Create<TMarker>(IClient<TMarker> client, IMessageDispatcher messageDispatcher);
+        IConnectionProcessor<TMarker> Create(IClient<TMarker> client, IMessageDispatcher<TMarker> messageDispatcher);
     }
 }

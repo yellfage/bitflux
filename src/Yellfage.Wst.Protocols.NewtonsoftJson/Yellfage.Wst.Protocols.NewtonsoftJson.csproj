@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <PackageId>Yellfage.Wst.Protocols.NewtonsoftJson</PackageId>
+    <Company>Yellfage</Company>
+    <Authors>iRandell</Authors>
+    <Version>1.0.0</Version>
+    <PackageDescription>WST NewtonsoftJson Protocol</PackageDescription>
+    <RepositoryUrl>https://github.com/yellfage/wst</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yellfage.Wst\Yellfage.Wst.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>

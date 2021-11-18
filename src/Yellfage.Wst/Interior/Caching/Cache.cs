@@ -6,28 +6,20 @@ using Yellfage.Wst.Caching;
 
 namespace Yellfage.Wst.Interior.Caching
 {
-    internal class Cache<TMarker> : IHubCache<TMarker>, IClientCache<TMarker>
+    internal abstract class Cache : ICache
     {
-        private ICacheConverter CacheConverter { get; }
-
-        private IDictionary<object, object> Dictionary { get; }
-
-        public Cache(ICacheConverter cacheConverter)
-        {
-            CacheConverter = cacheConverter;
-            Dictionary = new ConcurrentDictionary<object, object>();
-        }
+        private IDictionary<object, object> Dictionary { get; } = new ConcurrentDictionary<object, object>();
 
         public async Task<TValue> GetAsync<TValue>(object key)
         {
-            return CacheConverter.Deserialize<TValue>(Dictionary[key])!;
+            return (TValue)Dictionary[key];
         }
 
         public async Task<TValue?> FindAsync<TValue>(object key)
         {
             if (Dictionary.TryGetValue(key, out object? value))
             {
-                return CacheConverter.Deserialize<TValue>(value);
+                return (TValue)value;
             }
 
             return default;
@@ -35,7 +27,7 @@ namespace Yellfage.Wst.Interior.Caching
 
         public async Task SetAsync(object key, object value)
         {
-            Dictionary[key] = CacheConverter.Serialize(value);
+            Dictionary[key] = value;
         }
 
         public async Task RemoveAsync(object key)

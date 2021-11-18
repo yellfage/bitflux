@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 
 namespace Yellfage.Wst.Interior.Connection
 {
-    internal interface IConnectionProcessor
+    internal interface IConnectionProcessor<TMarker>
     {
-        Task StartProcessingAsync();
+        Task StartAsync();
     }
 }

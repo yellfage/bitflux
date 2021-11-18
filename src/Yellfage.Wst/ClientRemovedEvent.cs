@@ -1,10 +1,12 @@
 namespace Yellfage.Wst
 {
-    public class ClientRemovedEvent<TMarker>
+    public class ClientRemovedEvent<TMarker> : ClientEvent<TMarker>
     {
         public IClient<TMarker> Client { get; }
 
-        public ClientRemovedEvent(IClient<TMarker> client)
+        public ClientRemovedEvent(
+            IClientManager<TMarker> target,
+            IClient<TMarker> client) : base(target)
         {
             Client = client;
         }

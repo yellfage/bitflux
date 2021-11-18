@@ -5,8 +5,9 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal interface IProtocolProvider
+    internal interface IProtocolProvider<TMarker>
     {
-        bool TryChoose(IEnumerable<string> names, [MaybeNullWhen(false)] out IProtocol protocol);
+        IEnumerable<IProtocol<TMarker>> GetAll();
+        bool TryGet(string name, [MaybeNullWhen(false)] out IProtocol<TMarker> protocol);
     }
 }

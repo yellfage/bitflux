@@ -5,12 +5,14 @@ using Yellfage.Wst.Communication;
 
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class MessageDeserializer : IMessageDeserializer
+    internal class MessageDeserializer<TMarker> : IMessageDeserializer<TMarker>
     {
-        private IProtocol Protocol { get; }
-        private IMessageTypeResolver MessageTypeResolver { get; }
+        private IProtocol<TMarker> Protocol { get; }
+        private IMessageTypeResolver<TMarker> MessageTypeResolver { get; }
 
-        public MessageDeserializer(IProtocol protocol, IMessageTypeResolver messageTypeResolver)
+        public MessageDeserializer(
+            IProtocol<TMarker> protocol,
+            IMessageTypeResolver<TMarker> messageTypeResolver)
         {
             Protocol = protocol;
             MessageTypeResolver = messageTypeResolver;

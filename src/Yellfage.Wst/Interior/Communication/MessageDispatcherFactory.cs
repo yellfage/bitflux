@@ -1,35 +1,12 @@
-using System;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Yellfage.Wst.Interior.Invocation;
-
 namespace Yellfage.Wst.Interior.Communication
 {
-    internal class MessageDispatcherFactory : IMessageDispatcherFactory
+    internal class MessageDispatcherFactory<TMarker> : IMessageDispatcherFactory<TMarker>
     {
-        private IServiceProvider ServiceProvider { get; }
-
-        public MessageDispatcherFactory(IServiceProvider serviceProvider)
+        public IMessageDispatcher<TMarker> Create(
+            IInvocationMessageProcessor<TMarker> invocationMessageProcessor,
+            IMessageReceiver<TMarker> messageReceiver)
         {
-            ServiceProvider = serviceProvider;
-        }
-
-        public IMessageDispatcher Create<TMarker>(
-            IClient<TMarker> client,
-            IMessageReceiver messageReceiver,
-            IMessageTransmitter messageTransmitter,
-            IInvocationProcessor invocationProcessor)
-        {
-            IHub<TMarker> hub = ServiceProvider.GetRequiredService<IHub<TMarker>>();
-
-            return new MessageDispatcher<TMarker>(
-                hub,
-                client,
-                ServiceProvider,
-                messageReceiver,
-                messageTransmitter,
-                invocationProcessor);
+            return new MessageDispatcher<TMarker>(invocationMessageProcessor, messageReceiver);
         }
     }
 }

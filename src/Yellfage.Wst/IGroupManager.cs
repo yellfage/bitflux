@@ -6,11 +6,18 @@ namespace Yellfage.Wst
 {
     public interface IGroupManager<TMarker>
     {
+        event ClientAddedToGroupEventHandler<TMarker> Added;
+        event ClientRemovedFromGroupEventHandler<TMarker> Removed;
+
         Task AddAsync(string groupName, IClient<TMarker> client, CancellationToken cancellationToken = default);
+
         Task AddManyAsync(IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default);
+        Task AddManyAsync(string groupNamePrefix, IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default);
 
         Task RemoveAsync(string groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default);
         Task RemoveManyAsync(IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default);
+        Task RemoveManyAsync(string groupNamePrefix, IEnumerable<string> groupNames, IClient<TMarker> client, CancellationToken cancellationToken = default);
+        Task RemoveAll(IClient<TMarker> client, CancellationToken cancellationToken = default);
 
         Task NotifyAsync(string groupName, string handlerName, CancellationToken cancellationToken = default);
         Task NotifyAsync<TArgument1>(string groupName, string handlerName, TArgument1 argument1, CancellationToken cancellationToken = default);

@@ -2,7 +2,7 @@ using System;
 
 namespace Yellfage.Wst.Communication
 {
-    public interface IMessageTypeResolver
+    public interface IMessageTypeResolver<TMarker>
     {
         Type Resolve(IncomingMessage? message);
     }
