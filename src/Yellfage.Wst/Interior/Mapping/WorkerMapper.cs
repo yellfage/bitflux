@@ -10,20 +10,20 @@ namespace Yellfage.Wst.Interior.Mapping
 {
     internal class WorkerMapper<TMarker> : IWorkerMapper<TMarker>
     {
-        private IFilterExplorer<TMarker> FilterExplorer { get; }
+        private IFilterResearcher<TMarker> FilterResearcher { get; }
         private IHandlerMapper<TMarker> HandlerMapper { get; }
 
         public WorkerMapper(
-            IFilterExplorer<TMarker> filterExplorer,
+            IFilterResearcher<TMarker> filterResearcher,
             IHandlerMapper<TMarker> handlerMapper)
         {
-            FilterExplorer = filterExplorer;
+            FilterResearcher = filterResearcher;
             HandlerMapper = handlerMapper;
         }
 
         public void Map(Type type, IEnumerable<IFilter> outerFilters)
         {
-            IEnumerable<IFilter> filters = outerFilters.Concat(FilterExplorer.Explore(type));
+            IEnumerable<IFilter> filters = FilterResearcher.Research(type, outerFilters);
 
             foreach (MethodInfo method in ResolveMethods(type))
             {

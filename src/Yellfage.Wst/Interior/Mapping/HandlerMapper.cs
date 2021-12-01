@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 using Yellfage.Wst.Filters;
@@ -12,16 +11,16 @@ namespace Yellfage.Wst.Interior.Mapping
     internal class HandlerMapper<TMarker> : IHandlerMapper<TMarker>
     {
         private IHandlerStore<TMarker> HandlerStore { get; }
-        private IFilterExplorer<TMarker> FilterExplorer { get; }
+        private IFilterResearcher<TMarker> FilterResearcher { get; }
         private IHandlerFactory<TMarker> HandlerFactory { get; }
 
         public HandlerMapper(
-            IFilterExplorer<TMarker> filterExplorer,
             IHandlerStore<TMarker> handlerStore,
+            IFilterResearcher<TMarker> filterResearcher,
             IHandlerFactory<TMarker> handlerFactory)
         {
-            FilterExplorer = filterExplorer;
             HandlerStore = handlerStore;
+            FilterResearcher = filterResearcher;
             HandlerFactory = handlerFactory;
         }
 
@@ -43,7 +42,7 @@ namespace Yellfage.Wst.Interior.Mapping
                     "handler name duplication and method overloading are not supported");
             }
 
-            IEnumerable<IFilter> filters = outerFilters.Concat(FilterExplorer.Explore(method));
+            IEnumerable<IFilter> filters = FilterResearcher.Research(method, outerFilters);
 
             IHandler handler = HandlerFactory.Create(method, filters);
 

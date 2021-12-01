@@ -11,22 +11,23 @@ namespace Yellfage.Wst.Interior.Mapping
     internal class HubMapper<TMarker> : IHubMapper<TMarker>
     {
         private IHub<TMarker> Hub { get; }
-        private IFilterExplorer<TMarker> FilterExplorer { get; }
+        private IFilterResearcher<TMarker> FilterResearcher { get; }
         private IWorkerMapper<TMarker> WorkerMapper { get; }
 
         public HubMapper(
             IHub<TMarker> hub,
-            IFilterExplorer<TMarker> filterExplorer,
+            IFilterResearcher<TMarker> filterResearcher,
             IWorkerMapper<TMarker> workerMapper)
         {
             Hub = hub;
-            FilterExplorer = filterExplorer;
+            FilterResearcher = filterResearcher;
             WorkerMapper = workerMapper;
         }
 
         public void Map()
         {
-            IEnumerable<IFilter> filters = FilterExplorer.Explore(Hub.GetType());
+            IEnumerable<IFilter> filters = FilterResearcher
+                .Research(Hub.GetType(), new List<IFilter>());
 
             foreach (Type type in ResolveWorkerTypes())
             {

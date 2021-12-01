@@ -57,7 +57,7 @@ namespace Yellfage.Wst
                 .AddSingleton<IConnectionRequestProcessor<TMarker>, ConnectionRequestProcessor<TMarker>>()
                 .AddSingleton<IClientDisconnectorFactory<TMarker>, ClientDisconnectorFactory<TMarker>>()
                 .AddSingleton<IFilterExecutor<TMarker>, FilterExecutor<TMarker>>()
-                .AddSingleton<IFilterExplorer<TMarker>, FilterExplorer<TMarker>>()
+                .AddSingleton<IFilterResearcher<TMarker>, FilterResearcher<TMarker>>()
                 .AddSingleton<IArgumentBinderFactory<TMarker>, ArgumentBinderFactory<TMarker>>()
                 .AddSingleton<IArgumentConverterFactory<TMarker>, ArgumentConverterFactory<TMarker>>()
                 .AddSingleton<IHandlerExecutorFactory<TMarker>, HandlerExecutorFactory<TMarker>>()
