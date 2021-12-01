@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Yellfage.Wst.Filters
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class DefaultAuthorizationFilterAttribute : Attribute, IFilter, IAuthorizeData
     {
         public string? Policy { get; set; }
