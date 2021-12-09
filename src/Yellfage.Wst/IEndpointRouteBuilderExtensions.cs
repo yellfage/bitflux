@@ -42,7 +42,7 @@ namespace Yellfage.Wst
 
             serviceProvider.GetRequiredService<IHubMapper<TMarker>>().Map();
 
-            application.Use((context, _) => serviceProvider
+            application.Run((context) => serviceProvider
                 .GetRequiredService<IConnectionRequestProcessor<TMarker>>()
                 .ProcessAsync(context));
 
