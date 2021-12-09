@@ -16,11 +16,13 @@ namespace Yellfage.Wst.Interior.Invocation
         }
 
         public IInvocationExecutor<TMarker> Create(
+            IArgumentBinder<TMarker> argumentBinder,
             IHandlerExecutor<TMarker> handlerExecutor,
             IInvocationResponder<TMarker> invocationResponder)
         {
             return new InvocationExecutor<TMarker>(
                 HandlerStore,
+                argumentBinder,
                 FilterExecutor,
                 handlerExecutor,
                 invocationResponder);

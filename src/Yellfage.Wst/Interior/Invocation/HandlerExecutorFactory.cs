@@ -9,9 +9,9 @@ namespace Yellfage.Wst.Interior.Invocation
             MethodExecutor = methodExecutor;
         }
 
-        public IHandlerExecutor<TMarker> Create(IArgumentBinder<TMarker> argumentBinder)
+        public IHandlerExecutor<TMarker> Create()
         {
-            return new HandlerExecutor<TMarker>(argumentBinder, MethodExecutor);
+            return new HandlerExecutor<TMarker>(MethodExecutor);
         }
     }
 }

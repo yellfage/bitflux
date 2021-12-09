@@ -165,7 +165,7 @@ namespace Yellfage.Wst.Interior.Connection
                 .Create(argumentConverter);
 
             IHandlerExecutor<TMarker> handlerExecutor = HandlerExecutorFactory
-                .Create(argumentBinder);
+                .Create();
 
             IRegularInvocationResponder<TMarker> regularInvocationResponder = RegularInvocationResponderFactory
                 .Create(messageTransmitter);
@@ -174,7 +174,7 @@ namespace Yellfage.Wst.Interior.Connection
                 .Create();
 
             IInvocationMessageProcessor<TMarker> invocationMessageProcessor = InvocationMessageProcessorFactory
-                .Create(client, handlerExecutor, regularInvocationResponder, notifiableInvocationResponder);
+                .Create(client, argumentBinder, handlerExecutor, regularInvocationResponder, notifiableInvocationResponder);
 
             IMessageDispatcher<TMarker> messageDispatcher = MessageDispatcherFactory
                 .Create(invocationMessageProcessor, messageReceiver);

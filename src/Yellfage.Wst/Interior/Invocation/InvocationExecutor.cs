@@ -7,17 +7,20 @@ namespace Yellfage.Wst.Interior.Invocation
     internal class InvocationExecutor<TMarker> : IInvocationExecutor<TMarker>
     {
         private IHandlerStore<TMarker> HandlerStore { get; }
+        private IArgumentBinder<TMarker> ArgumentBinder { get; }
         private IFilterExecutor<TMarker> FilterExecutor { get; }
         private IHandlerExecutor<TMarker> HandlerExecutor { get; }
         private IInvocationResponder<TMarker> InvocationResponder { get; }
 
         public InvocationExecutor(
             IHandlerStore<TMarker> handlerStore,
+            IArgumentBinder<TMarker> argumentBinder,
             IFilterExecutor<TMarker> filterExecutor,
             IHandlerExecutor<TMarker> handlerExecutor,
             IInvocationResponder<TMarker> invocationResponder)
         {
             HandlerStore = handlerStore;
+            ArgumentBinder = argumentBinder;
             FilterExecutor = filterExecutor;
             HandlerExecutor = handlerExecutor;
             InvocationResponder = invocationResponder;
@@ -29,6 +32,8 @@ namespace Yellfage.Wst.Interior.Invocation
             {
                 try
                 {
+                    ArgumentBinder.BindMany(handler.Method.GetParameters(), context.Arguments);
+
                     object? result = await FilterExecutor.ExecuteAsync(
                         handler.Filters,
                         context,

@@ -22,6 +22,7 @@ namespace Yellfage.Wst.Interior.Communication
 
         public IInvocationMessageProcessor<TMarker> Create(
             IClient<TMarker> client,
+            IArgumentBinder<TMarker> argumentBinder,
             IHandlerExecutor<TMarker> handlerExecutor,
             IRegularInvocationResponder<TMarker> regularInvocationResponder,
             INotifiableInvocationResponder<TMarker> notifiableInvocationResponder)
@@ -31,6 +32,7 @@ namespace Yellfage.Wst.Interior.Communication
                 client,
                 ServiceProvider,
                 InvocationExecutorFactory,
+                argumentBinder,
                 handlerExecutor,
                 regularInvocationResponder,
                 notifiableInvocationResponder);

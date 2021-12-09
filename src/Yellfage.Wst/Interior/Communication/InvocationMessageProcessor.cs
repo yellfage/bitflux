@@ -13,6 +13,7 @@ namespace Yellfage.Wst.Interior.Communication
         private IClient<TMarker> Client { get; }
         private IServiceProvider ServiceProvider { get; }
         private IInvocationExecutorFactory<TMarker> InvocationExecutorFactory { get; }
+        private IArgumentBinder<TMarker> ArgumentBinder { get; }
         private IHandlerExecutor<TMarker> HandlerExecutor { get; }
         private IRegularInvocationResponder<TMarker> RegularInvocationResponder { get; }
         private INotifiableInvocationResponder<TMarker> NotifiableInvocationResponder { get; }
@@ -22,6 +23,7 @@ namespace Yellfage.Wst.Interior.Communication
             IClient<TMarker> client,
             IServiceProvider serviceProvider,
             IInvocationExecutorFactory<TMarker> invocationExecutorFactory,
+            IArgumentBinder<TMarker> argumentBinder,
             IHandlerExecutor<TMarker> handlerExecutor,
             IRegularInvocationResponder<TMarker> regularInvocationResponder,
             INotifiableInvocationResponder<TMarker> notifiableInvocationResponder)
@@ -30,6 +32,7 @@ namespace Yellfage.Wst.Interior.Communication
             Client = client;
             ServiceProvider = serviceProvider;
             InvocationExecutorFactory = invocationExecutorFactory;
+            ArgumentBinder = argumentBinder;
             HandlerExecutor = handlerExecutor;
             RegularInvocationResponder = regularInvocationResponder;
             NotifiableInvocationResponder = notifiableInvocationResponder;
@@ -57,7 +60,7 @@ namespace Yellfage.Wst.Interior.Communication
             };
 
             await InvocationExecutorFactory
-                .Create(HandlerExecutor, invocationResponder)
+                .Create(ArgumentBinder, HandlerExecutor, invocationResponder)
                 .ExecuteAsync(context);
         }
     }
