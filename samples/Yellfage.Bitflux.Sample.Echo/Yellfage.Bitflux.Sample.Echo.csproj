@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Yellfage.Bitflux.Protocols.NewtonsoftJson\Yellfage.Bitflux.Protocols.NewtonsoftJson.csproj" />
+    <ProjectReference Include="..\..\src\Yellfage.Bitflux.Receptions.WebSockets\Yellfage.Bitflux.Receptions.WebSockets.csproj" />
+    <ProjectReference Include="..\..\src\Yellfage.Bitflux\Yellfage.Bitflux.csproj" />
+  </ItemGroup>
+
+</Project>
