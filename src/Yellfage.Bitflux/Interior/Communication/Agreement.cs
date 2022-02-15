@@ -5,17 +5,17 @@ namespace Yellfage.Bitflux.Interior.Communication
     internal class Agreement : IAgreement
     {
         public IVersion Version { get; }
-        public IEnumerable<string> TransportNames { get; }
-        public IEnumerable<string> ProtocolNames { get; }
+        public IEnumerable<string> Transports { get; }
+        public IEnumerable<string> Protocols { get; }
 
         public Agreement(
             IVersion version,
-            IEnumerable<string> transportNames,
-            IEnumerable<string> protocolNames)
+            IEnumerable<string> transports,
+            IEnumerable<string> protocols)
         {
             Version = version;
-            TransportNames = transportNames;
-            ProtocolNames = protocolNames;
+            Transports = transports;
+            Protocols = protocols;
         }
     }
 }

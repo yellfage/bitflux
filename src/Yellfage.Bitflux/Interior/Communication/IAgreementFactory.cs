@@ -4,6 +4,6 @@ namespace Yellfage.Bitflux.Interior.Communication
 {
     internal interface IAgreementFactory<TMarker>
     {
-        IAgreement Create(IVersion version, IEnumerable<string> transportNames, IEnumerable<string> protocolNames);
+        IAgreement Create(IVersion version, IEnumerable<string> transports, IEnumerable<string> protocols);
     }
 }

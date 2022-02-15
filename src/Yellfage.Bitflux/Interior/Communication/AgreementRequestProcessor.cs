@@ -26,16 +26,16 @@ namespace Yellfage.Bitflux.Interior.Communication
 
         public async Task ProcessAsync(HttpContext context)
         {
-            IEnumerable<string> transportNames = ReceptionProvider
+            IEnumerable<string> transports = ReceptionProvider
                 .GetAll()
                 .Select(reception => reception.TransportName);
 
-            IEnumerable<string> protocolNames = ProtocolProvider
+            IEnumerable<string> protocols = ProtocolProvider
                 .GetAll()
                 .Select(protocol => protocol.Name);
 
             IAgreement agreement = AgreementFactory
-                .Create(Version, transportNames, protocolNames);
+                .Create(Version, transports, protocols);
 
             context.Response.StatusCode = StatusCodes.Status200OK;
 

@@ -5,7 +5,7 @@ namespace Yellfage.Bitflux.Interior.Communication
     internal interface IAgreement
     {
         IVersion Version { get; }
-        IEnumerable<string> TransportNames { get; }
-        IEnumerable<string> ProtocolNames { get; }
+        IEnumerable<string> Transports { get; }
+        IEnumerable<string> Protocols { get; }
     }
 }
