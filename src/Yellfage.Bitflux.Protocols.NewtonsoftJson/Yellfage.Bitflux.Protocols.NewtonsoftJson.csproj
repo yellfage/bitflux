@@ -6,7 +6,7 @@
     <PackageId>Yellfage.Bitflux.Protocols.NewtonsoftJson</PackageId>
     <Company>Yellfage</Company>
     <Authors>iRandell</Authors>
-    <Version>1.0.0</Version>
+    <Version>1.0.0-beta.1</Version>
     <PackageDescription>Bitflux NewtonsoftJson Protocol</PackageDescription>
     <RepositoryUrl>https://github.com/yellfage/bitflux</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
