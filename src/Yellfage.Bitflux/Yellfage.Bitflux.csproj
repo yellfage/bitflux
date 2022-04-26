@@ -6,7 +6,7 @@
     <PackageId>Yellfage.Bitflux</PackageId>
     <Company>Yellfage</Company>
     <Authors>iRandell</Authors>
-    <Version>1.0.0-beta.1</Version>
+    <Version>1.0.0-beta.2</Version>
     <PackageDescription>Web Socket Transfer</PackageDescription>
     <RepositoryUrl>https://github.com/yellfage/bitflux</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
