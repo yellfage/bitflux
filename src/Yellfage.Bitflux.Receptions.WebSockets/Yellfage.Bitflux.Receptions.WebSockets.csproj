@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Yellfage.Bitflux\Yellfage.Bitflux.csproj" />
+    <PackageReference Include="Yellfage.Bitflux" Version="1.0.0-beta.2" />
   </ItemGroup>
 
 </Project>
