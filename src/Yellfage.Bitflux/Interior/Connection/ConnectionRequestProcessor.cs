@@ -15,7 +15,6 @@ namespace Yellfage.Bitflux.Interior.Connection
     internal class ConnectionRequestProcessor<TMarker> : IConnectionRequestProcessor<TMarker>
     {
         private IReceptionProvider<TMarker> ReceptionProvider { get; }
-        private IProtocolProvider<TMarker> ProtocolProvider { get; }
         private IClientClaimsPrincipalFactory<TMarker> ClientClaimsPrincipalFactory { get; }
         private IClientCacheFactory<TMarker> ClientCacheFactory { get; }
         private IMessageTransmitterFactory<TMarker> MessageTransmitterFactory { get; }
@@ -35,7 +34,6 @@ namespace Yellfage.Bitflux.Interior.Connection
 
         public ConnectionRequestProcessor(
             IReceptionProvider<TMarker> receptionProvider,
-            IProtocolProvider<TMarker> protocolProvider,
             IClientClaimsPrincipalFactory<TMarker> clientClaimsPrincipalFactory,
             IClientCacheFactory<TMarker> clientCacheFactory,
             IMessageTransmitterFactory<TMarker> messageTransmitterFactory,
@@ -54,7 +52,6 @@ namespace Yellfage.Bitflux.Interior.Connection
             IConnectionProcessorFactory<TMarker> connectionProcessorFactory)
         {
             ReceptionProvider = receptionProvider;
-            ProtocolProvider = protocolProvider;
             ClientClaimsPrincipalFactory = clientClaimsPrincipalFactory;
             ClientCacheFactory = clientCacheFactory;
             MessageTransmitterFactory = messageTransmitterFactory;
@@ -76,34 +73,26 @@ namespace Yellfage.Bitflux.Interior.Connection
         public async Task ProcessAsync(HttpContext context)
         {
             string transportName = context.Request.Query["transport"].ToString();
-            string protocolName = context.Request.Query["protocol"].ToString();
 
             if (ReceptionProvider.TryGet(transportName, out IReception<TMarker>? reception))
             {
-                if (ProtocolProvider.TryGet(protocolName, out IProtocol<TMarker>? protocol))
+                try
                 {
-                    try
-                    {
-                        await StartAsync(context, reception, protocol);
-                    }
-                    catch (ReceptionException exception)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-
-                        await context.Response.WriteAsync(exception.Message);
-
-                        return;
-                    }
+                    await StartAsync(context, reception);
                 }
-                else
+                catch (ReceptionException exception)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-                    await context.Response.WriteAsync(
-                        "Unable to process the request: " +
-                        "none of the provided protocols are supported");
+                    await context.Response.WriteAsync(exception.Message);
 
                     return;
+                }
+                catch (ProtocolException exception)
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                    await context.Response.WriteAsync(exception.Message);
                 }
             }
             else
@@ -111,20 +100,17 @@ namespace Yellfage.Bitflux.Interior.Connection
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
                 await context.Response.WriteAsync(
-                    "Unable to process the request: " +
-                    "none of the provided transports are supported");
+                    $"A transport with the '{transportName}' name not found");
 
                 return;
             }
         }
 
         /// <exception cref="ReceptionException" />
-        private async Task StartAsync(
-            HttpContext context,
-            IReception<TMarker> reception,
-            IProtocol<TMarker> protocol)
+        /// <exception cref="ProtocolException" />
+        private async Task StartAsync(HttpContext context, IReception<TMarker> reception)
         {
-            using ITransport<TMarker> transport = await reception.AcceptAsync(context);
+            using IAgreement<TMarker> agreement = await reception.AcceptAsync(context);
 
             IClientClaimsPrincipal<TMarker> user = ClientClaimsPrincipalFactory
                 .Create(context.User);
@@ -133,13 +119,13 @@ namespace Yellfage.Bitflux.Interior.Connection
                 .Create(user);
 
             IMessageTransmitter<TMarker> messageTransmitter = MessageTransmitterFactory
-                .Create(transport, protocol);
+                .Create(agreement.Transport, agreement.Protocol);
 
             IClientNotifier<TMarker> clientNotifier = ClientNotifierFactory
                 .Create(messageTransmitter);
 
             IClientDisconnector<TMarker> clientDisconnector = ClientDisconnectorFactory
-                .Create(transport);
+                .Create(agreement.Transport);
 
             IClient<TMarker> client = ClientFactory
                 .Create(
@@ -153,13 +139,13 @@ namespace Yellfage.Bitflux.Interior.Connection
                     clientDisconnector);
 
             IMessageDeserializer<TMarker> messageDeserializer = MessageDeserializerFactory
-                .Create(protocol);
+                .Create(agreement.Protocol);
 
             IMessageReceiver<TMarker> messageReceiver = MessageReceiverFactory
-                .Create(transport, messageDeserializer);
+                .Create(agreement.Transport, messageDeserializer);
 
             IArgumentConverter<TMarker> argumentConverter = ArgumentConverterFactory.
-                Create(protocol);
+                Create(agreement.Protocol);
 
             IArgumentBinder<TMarker> argumentBinder = ArgumentBinderFactory
                 .Create(argumentConverter);

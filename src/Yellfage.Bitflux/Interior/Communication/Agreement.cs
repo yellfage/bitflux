@@ -1,21 +1,21 @@
-using System.Collections.Generic;
+using Yellfage.Bitflux.Communication;
 
 namespace Yellfage.Bitflux.Interior.Communication
 {
-    internal class Agreement : IAgreement
+    internal class Agreement<TMarker> : IAgreement<TMarker>
     {
-        public IVersion Version { get; }
-        public IEnumerable<string> Transports { get; }
-        public IEnumerable<string> Protocols { get; }
+        public ITransport<TMarker> Transport { get; }
+        public IProtocol<TMarker> Protocol { get; }
 
-        public Agreement(
-            IVersion version,
-            IEnumerable<string> transports,
-            IEnumerable<string> protocols)
+        public Agreement(ITransport<TMarker> transport, IProtocol<TMarker> protocol)
         {
-            Version = version;
-            Transports = transports;
-            Protocols = protocols;
+            Transport = transport;
+            Protocol = protocol;
+        }
+
+        public void Dispose()
+        {
+            Transport.Dispose();
         }
     }
 }

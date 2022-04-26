@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Yellfage.Bitflux.Communication;
@@ -15,16 +14,19 @@ namespace Yellfage.Bitflux.Interior.Communication
             Protocols = protocols;
         }
 
-        public IEnumerable<IProtocol<TMarker>> GetAll()
+        public IProtocol<TMarker> Select(IEnumerable<string> names)
         {
-            return Protocols;
-        }
+            IProtocol<TMarker>? protocol = Protocols
+                .FirstOrDefault(currentProtocol => names
+                    .Any(name => currentProtocol.Name == name));
 
-        public bool TryGet(string name, [MaybeNullWhen(false)] out IProtocol<TMarker> protocol)
-        {
-            protocol = Protocols.FirstOrDefault(protocol => protocol.Name == name);
+            if (protocol is null)
+            {
+                throw new ProtocolException(
+                    $"None protocol with the provided names [{string.Join(", ", names)}] found");
+            }
 
-            return protocol is not null;
+            return protocol;
         }
     }
 }

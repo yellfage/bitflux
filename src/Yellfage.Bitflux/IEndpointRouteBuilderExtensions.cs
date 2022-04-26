@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Yellfage.Bitflux.Communication;
 using Yellfage.Bitflux.Interior;
-using Yellfage.Bitflux.Interior.Communication;
 using Yellfage.Bitflux.Interior.Connection;
 using Yellfage.Bitflux.Interior.Mapping;
 
@@ -32,8 +31,6 @@ namespace Yellfage.Bitflux
             EnsureReceptionsProvided<TMarker>(builder.ServiceProvider);
             EnsureProtocolsProvided<TMarker>(builder.ServiceProvider);
 
-            MapBitfluxHubAgreement<TMarker>(builder, pattern);
-
             IApplicationBuilder application = builder.CreateApplicationBuilder();
 
             IServiceProvider serviceProvider = application.ApplicationServices;
@@ -50,21 +47,6 @@ namespace Yellfage.Bitflux
                 .Map(pattern, application.Build());
 
             return new BitfluxHubEndpointConventionBuilder(endpointConventionBuilder);
-        }
-
-        private static IEndpointRouteBuilder MapBitfluxHubAgreement<TMarker>(
-            this IEndpointRouteBuilder builder,
-            string pattern)
-        {
-            builder.MapGet($"{pattern.TrimEnd('/')}/agreement", async context =>
-            {
-                await builder
-                    .ServiceProvider
-                    .GetRequiredService<IAgreementRequestProcessor<TMarker>>()
-                    .ProcessAsync(context);
-            });
-
-            return builder;
         }
 
         private static void EnsureServicesConfigured<TMarker>(IServiceProvider serviceProvider)

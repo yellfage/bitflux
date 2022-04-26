@@ -1,15 +1,12 @@
-using System.Collections.Generic;
+using Yellfage.Bitflux.Communication;
 
 namespace Yellfage.Bitflux.Interior.Communication
 {
     internal class AgreementFactory<TMarker> : IAgreementFactory<TMarker>
     {
-        public IAgreement Create(
-            IVersion version,
-            IEnumerable<string> transports,
-            IEnumerable<string> protocols)
+        public IAgreement<TMarker> Create(ITransport<TMarker> transport, IProtocol<TMarker> protocol)
         {
-            return new Agreement(version, transports, protocols);
+            return new Agreement<TMarker>(transport, protocol);
         }
     }
 }

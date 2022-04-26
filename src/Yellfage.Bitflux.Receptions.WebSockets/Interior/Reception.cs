@@ -11,14 +11,21 @@ namespace Yellfage.Bitflux.Receptions.WebSockets
     {
         public string TransportName { get; } = "web-socket";
 
+        private IProtocolProvider<TMarker> ProtocolProvider { get; }
         private ITransportFactory<TMarker> TransportFactory { get; }
+        private IAgreementFactory<TMarker> AgreementFactory { get; }
 
-        public Reception(ITransportFactory<TMarker> transportFactory)
+        public Reception(
+            IProtocolProvider<TMarker> protocolProvider,
+            ITransportFactory<TMarker> transportFactory,
+            IAgreementFactory<TMarker> agreementFactory)
         {
+            ProtocolProvider = protocolProvider;
             TransportFactory = transportFactory;
+            AgreementFactory = agreementFactory;
         }
 
-        public async Task<ITransport<TMarker>> AcceptAsync(HttpContext context)
+        public async Task<IAgreement<TMarker>> AcceptAsync(HttpContext context)
         {
             if (!context.WebSockets.IsWebSocketRequest)
             {
@@ -27,9 +34,14 @@ namespace Yellfage.Bitflux.Receptions.WebSockets
                     "it is not a WebSocket establishment request");
             }
 
-            WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            IProtocol<TMarker> protocol = ProtocolProvider
+                .Select(context.WebSockets.WebSocketRequestedProtocols);
 
-            return TransportFactory.Create(webSocket);
+            WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync(protocol.Name);
+
+            ITransport<TMarker> transport = TransportFactory.Create(webSocket);
+
+            return AgreementFactory.Create(transport, protocol);
         }
     }
 }

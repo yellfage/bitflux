@@ -9,6 +9,7 @@ namespace Yellfage.Bitflux.Communication
         string TransportName { get; }
 
         /// <exception cref="ReceptionException" />
-        Task<ITransport<TMarker>> AcceptAsync(HttpContext context);
+        /// <exception cref="ProtocolException" />
+        Task<IAgreement<TMarker>> AcceptAsync(HttpContext context);
     }
 }
