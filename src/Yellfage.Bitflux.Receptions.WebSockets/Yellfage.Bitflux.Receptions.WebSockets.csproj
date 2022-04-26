@@ -6,7 +6,7 @@
     <PackageId>Yellfage.Bitflux.Receptions.WebSockets</PackageId>
     <Company>Yellfage</Company>
     <Authors>iRandell</Authors>
-    <Version>1.0.0-beta.1</Version>
+    <Version>1.0.0-beta.2</Version>
     <PackageDescription>Bitflux WebSocket Reception</PackageDescription>
     <RepositoryUrl>https://github.com/yellfage/bitflux</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
